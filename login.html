@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SSC Hustlers - Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#0b1437;--gold:#d4a843;--gl:#f0c96a;--w:#fff;--m:#8a95b0;--t:#e8ecf7;--green:#34c759;--red:#ff3b30;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--navy);color:var(--t);font-family:"DM Sans",sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+.glow1{position:fixed;width:600px;height:600px;background:radial-gradient(circle,rgba(212,168,67,.1),transparent 70%);top:-200px;right:-200px;pointer-events:none;}
+.glow2{position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(0,198,255,.07),transparent 70%);bottom:-100px;left:-100px;pointer-events:none;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 5%;background:rgba(11,20,55,.95);border-bottom:1px solid rgba(212,168,67,.12);position:relative;z-index:10;}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.logo-text{font-family:"Playfair Display",serif;font-size:1.3rem;font-weight:900;color:var(--w)}
+.logo-text span{color:var(--gold)}
+.back{color:var(--m);font-size:.85rem;text-decoration:none;transition:color .2s}
+.back:hover{color:var(--gold)}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem 1rem;position:relative;z-index:2;}
+.auth-box{width:100%;max-width:440px;}
+.tabs{display:flex;background:rgba(11,20,55,.6);border-radius:12px;padding:.3rem;margin-bottom:2rem;border:1px solid rgba(255,255,255,.07);}
+.tab{flex:1;padding:.7rem;text-align:center;border-radius:9px;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--m);transition:all .25s;border:none;background:transparent;}
+.tab.active{background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);}
+.form-card{background:rgba(20,32,80,.8);border:1px solid rgba(212,168,67,.15);border-radius:18px;padding:2.2rem;backdrop-filter:blur(20px);box-shadow:0 24px 60px rgba(0,0,0,.4);animation:fadeUp .4s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.form-title{font-family:"Playfair Display",serif;font-size:1.6rem;font-weight:700;color:var(--w);margin-bottom:.4rem;}
+.form-sub{font-size:.85rem;color:var(--m);margin-bottom:1.8rem;}
+.form-group{margin-bottom:1.2rem;}
+.form-label{font-size:.8rem;font-weight:600;color:var(--t);letter-spacing:.5px;display:block;margin-bottom:.5rem;}
+.form-input{width:100%;background:rgba(11,20,55,.7);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:.85rem 1.1rem;color:var(--w);font-size:.92rem;font-family:"DM Sans",sans-serif;transition:border-color .2s,box-shadow .2s;outline:none;}
+.form-input:focus{border-color:rgba(212,168,67,.5);box-shadow:0 0 0 3px rgba(212,168,67,.08);}
+.form-input::placeholder{color:var(--m);font-size:.88rem;}
+.input-wrap{position:relative;}
+.eye-btn{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--m);font-size:1rem;padding:.2rem;transition:color .2s;}
+.eye-btn:hover{color:var(--gold);}
+.forgot{text-align:right;margin-top:.4rem;}
+.forgot a{font-size:.78rem;color:var(--gold);text-decoration:none;}
+.btn-submit{width:100%;padding:1rem;background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:.5rem;transition:transform .2s,box-shadow .2s;font-family:"DM Sans",sans-serif;}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(212,168,67,.4);}
+.btn-submit:disabled{opacity:.6;transform:none;cursor:default;}
+.divider{display:flex;align-items:center;gap:1rem;margin:1.4rem 0;}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.08);}
+.divider span{font-size:.78rem;color:var(--m);}
+.switch-text{text-align:center;margin-top:1.4rem;font-size:.85rem;color:var(--m);}
+.switch-text a{color:var(--gold);text-decoration:none;font-weight:600;}
+.msg{border-radius:8px;padding:.7rem 1rem;font-size:.83rem;margin-bottom:1rem;display:none;}
+.msg.show{display:block;}
+.msg.error{background:rgba(255,59,48,.08);border:1px solid rgba(255,59,48,.3);color:#ff6b6b;}
+.msg.success{background:rgba(52,199,89,.08);border:1px solid rgba(52,199,89,.3);color:#5dea85;}
+.strength-bar{height:3px;border-radius:2px;background:rgba(255,255,255,.06);margin-top:.4rem;overflow:hidden;}
+.strength-fill{height:100%;width:0;border-radius:2px;transition:width .3s,background .3s;}
+.strength-label{font-size:.72rem;color:var(--m);margin-top:.3rem;}
+.terms{font-size:.78rem;color:var(--m);margin-top:.8rem;text-align:center;}
+.terms a{color:var(--gold);text-decoration:none;}
+.welcome-screen{display:none;text-align:center;padding:2rem;}
+.welcome-screen.show{display:block;animation:fadeUp .5s ease;}
+.welcome-emoji{font-size:3.5rem;margin-bottom:1rem;}
+.welcome-title{font-family:"Playfair Display",serif;font-size:2rem;color:var(--w);margin-bottom:.5rem;}
+.welcome-sub{color:var(--m);margin-bottom:2rem;line-height:1.7;}
+.btn-go{display:inline-block;padding:.9rem 2.5rem;background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);border-radius:10px;font-weight:700;text-decoration:none;font-size:.95rem;transition:transform .2s;}
+.btn-go:hover{transform:translateY(-2px);}
+.verified-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(52,199,89,.1);border:1px solid rgba(52,199,89,.3);color:#5dea85;font-size:.75rem;font-weight:600;padding:.3rem .8rem;border-radius:100px;margin-bottom:1rem;}
+</style>
+</head>
+<body>
+<div class="glow1"></div>
+<div class="glow2"></div>
+<nav>
+  <a href="index.html" class="logo">
+    <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="48" fill="#0b1437"/>
+      <path d="M48 25 C35 22 20 28 18 40 C16 48 20 54 26 57 C22 62 24 70 30 72 C32 78 40 80 46 76 L48 76 L48 25Z" fill="#00c6ff" opacity="0.9"/>
+      <path d="M52 25 C65 22 80 28 82 40 C84 48 80 54 74 57 C78 62 76 70 70 72 C68 78 60 80 54 76 L52 76 L52 25Z" fill="#a855f7" opacity="0.9"/>
+      <path d="M55 18 L42 52 L52 52 L45 82 L62 44 L51 44 Z" fill="#ffd700" stroke="#fff" stroke-width="1"/>
+    </svg>
+    <div class="logo-text">SSC <span>Hustlers</span></div>
+  </a>
+  <a href="index.html" class="back">&larr; Home</a>
+</nav>
+
+<div class="main">
+  <div class="auth-box">
+    <div class="tabs" id="tabsRow">
+      <button class="tab active" id="tabLogin" onclick="showTab('login')">Login</button>
+      <button class="tab" id="tabSignup" onclick="showTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="form-card" id="loginForm">
+      <div class="form-title">Welcome Back! &#128075;</div>
+      <div class="form-sub">Apne account mein login karo</div>
+      <div class="msg error" id="loginError"></div>
+      <div class="msg success" id="loginSuccess"></div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="loginEmail" placeholder="apna@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-wrap">
+          <input class="form-input" type="password" id="loginPass" placeholder="Password daalo" style="padding-right:2.8rem"/>
+          <button class="eye-btn" onclick="togglePass('loginPass',this)">&#128065;</button>
+        </div>
+        <div class="forgot"><a href="#" onclick="forgotPassword()">Password bhool gaye?</a></div>
+      </div>
+      <button class="btn-submit" id="loginBtn" onclick="doLogin()">Login Karo &rarr;</button>
+      <div class="switch-text">Account nahi hai? <a href="#" onclick="showTab('signup')">Sign Up karo</a></div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div class="form-card" id="signupForm" style="display:none">
+      <div class="form-title">Join Hustlers! &#9889;</div>
+      <div class="form-sub">Free account banao aur shuru karo</div>
+      <div class="msg error" id="signupError"></div>
+      <div class="msg success" id="signupSuccess"></div>
+      <div class="form-group">
+        <label class="form-label">Poora Naam</label>
+        <input class="form-input" type="text" id="signupName" placeholder="Apna naam daalo"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="signupEmail" placeholder="apna@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-wrap">
+          <input class="form-input" type="password" id="signupPass" placeholder="Strong password banao" style="padding-right:2.8rem" oninput="checkStrength(this.value)"/>
+          <button class="eye-btn" onclick="togglePass('signupPass',this)">&#128065;</button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div class="strength-label" id="strengthLabel">Password strength dikhega</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <div class="input-wrap">
+          <input class="form-input" type="password" id="signupPass2" placeholder="Password dobara daalo" style="padding-right:2.8rem"/>
+          <button class="eye-btn" onclick="togglePass('signupPass2',this)">&#128065;</button>
+        </div>
+      </div>
+      <button class="btn-submit" id="signupBtn" onclick="doSignup()">Account Banao &rarr;</button>
+      <div class="terms">Sign up karke aap hamare <a href="#">Terms</a> aur <a href="#">Privacy Policy</a> se agree karte ho.</div>
+      <div class="switch-text">Pehle se account hai? <a href="#" onclick="showTab('login')">Login karo</a></div>
+    </div>
+
+    <!-- WELCOME -->
+    <div class="welcome-screen" id="welcomeScreen">
+      <div class="verified-badge">&#10003; Successfully Login</div>
+      <div class="welcome-emoji">&#127881;</div>
+      <div class="welcome-title" id="welcomeName">Welcome, Hustler!</div>
+      <div class="welcome-sub">
+        Tera account ready hai!<br/>
+        Ab SSC ki taiyari shuru karo. <strong style="color:var(--gold)">All the best!</strong> &#128170;
+      </div>
+      <a href="quiz.html" class="btn-go">Quiz Shuru Karo &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ✅ SUPABASE INIT
+const SUPABASE_URL = 'https://bszikpzoiwzvrjovuunx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzemlrcHpvaXd6dnJqb3Z1dW54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NjY5MzYsImV4cCI6MjA4ODE0MjkzNn0.jaUjPNQTLSAioq4rF-xHzPujftqnhnFXC5P2S8SKmgU';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Check if already logged in
+sb.auth.getSession().then(function(res){
+  if(res.data.session){
+    var user = res.data.session.user;
+    var name = user.user_metadata && user.user_metadata.full_name ? user.user_metadata.full_name : user.email.split('@')[0];
+    showWelcome(name);
+  }
+});
+
+function showTab(tab){
+  document.getElementById('loginForm').style.display = tab==='login' ? 'block' : 'none';
+  document.getElementById('signupForm').style.display = tab==='signup' ? 'block' : 'none';
+  document.getElementById('tabLogin').className = 'tab' + (tab==='login' ? ' active' : '');
+  document.getElementById('tabSignup').className = 'tab' + (tab==='signup' ? ' active' : '');
+}
+
+function togglePass(id, btn){
+  var inp = document.getElementById(id);
+  if(inp.type === 'password'){ inp.type = 'text'; btn.innerHTML = '&#128078;'; }
+  else { inp.type = 'password'; btn.innerHTML = '&#128065;'; }
+}
+
+function checkStrength(val){
+  var fill = document.getElementById('strengthFill');
+  var label = document.getElementById('strengthLabel');
+  var score = 0;
+  if(val.length >= 8) score++;
+  if(val.length >= 12) score++;
+  if(/[A-Z]/.test(val)) score++;
+  if(/[0-9]/.test(val)) score++;
+  if(/[^A-Za-z0-9]/.test(val)) score++;
+  var levels = [['0%','transparent',''],['20%','#ff3b30','Bahut Kamzor'],['40%','#ff9500','Kamzor'],['60%','#ffcc00','Theek Hai'],['80%','#34c759','Achha'],['100%','#00c6ff','Zabardast!']];
+  var l = levels[Math.min(score, 5)];
+  fill.style.width = l[0]; fill.style.background = l[1];
+  label.textContent = l[2]; label.style.color = l[1];
+}
+
+function showMsg(id, type, text){
+  var el = document.getElementById(id);
+  el.className = 'msg ' + type + ' show';
+  el.textContent = text;
+}
+
+function hideMsg(id){
+  document.getElementById(id).classList.remove('show');
+}
+
+async function doLogin(){
+  var email = document.getElementById('loginEmail').value.trim();
+  var pass = document.getElementById('loginPass').value;
+  hideMsg('loginError'); hideMsg('loginSuccess');
+  if(!email || !pass){ showMsg('loginError','error','Email aur password daalo!'); return; }
+  if(!email.includes('@')){ showMsg('loginError','error','Valid email daalo!'); return; }
+
+  var btn = document.getElementById('loginBtn');
+  btn.textContent = 'Login ho raha hai...'; btn.disabled = true;
+
+  var res = await sb.auth.signInWithPassword({ email: email, password: pass });
+
+  btn.textContent = 'Login Karo \u2192'; btn.disabled = false;
+
+  if(res.error){
+    var msg = res.error.message;
+    if(msg.includes('Invalid')) msg = 'Email ya password galat hai!';
+    else if(msg.includes('confirmed')) msg = 'Pehle email confirm karo — inbox check karo!';
+    showMsg('loginError','error', msg);
+  } else {
+    var name = res.data.user.user_metadata && res.data.user.user_metadata.full_name
+      ? res.data.user.user_metadata.full_name
+      : email.split('@')[0];
+    showWelcome(name);
+  }
+}
+
+async function doSignup(){
+  var name = document.getElementById('signupName').value.trim();
+  var email = document.getElementById('signupEmail').value.trim();
+  var pass = document.getElementById('signupPass').value;
+  var pass2 = document.getElementById('signupPass2').value;
+  hideMsg('signupError'); hideMsg('signupSuccess');
+
+  if(!name || !email || !pass || !pass2){ showMsg('signupError','error','Sab fields bharo!'); return; }
+  if(!email.includes('@')){ showMsg('signupError','error','Valid email daalo!'); return; }
+  if(pass.length < 6){ showMsg('signupError','error','Password kam se kam 6 characters ka hona chahiye!'); return; }
+  if(pass !== pass2){ showMsg('signupError','error','Dono passwords match nahi kar rahe!'); return; }
+
+  var btn = document.getElementById('signupBtn');
+  btn.textContent = 'Account ban raha hai...'; btn.disabled = true;
+
+  var res = await sb.auth.signUp({
+    email: email,
+    password: pass,
+    options: { data: { full_name: name } }
+  });
+
+  btn.textContent = 'Account Banao \u2192'; btn.disabled = false;
+
+  if(res.error){
+    var msg = res.error.message;
+    if(msg.includes('already')) msg = 'Yeh email pehle se registered hai! Login karo.';
+    showMsg('signupError','error', msg);
+  } else {
+    showMsg('signupSuccess','success','&#127881; Account ban gaya! Apna email inbox check karo aur confirm karo, phir login karo!');
+    document.getElementById('signupName').value = '';
+    document.getElementById('signupEmail').value = '';
+    document.getElementById('signupPass').value = '';
+    document.getElementById('signupPass2').value = '';
+  }
+}
+
+async function forgotPassword(){
+  var email = document.getElementById('loginEmail').value.trim();
+  if(!email || !email.includes('@')){
+    showMsg('loginError','error','Pehle upar email daalo, phir yahan click karo!');
+    return;
+  }
+  var res = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/login.html'
+  });
+  if(res.error){ showMsg('loginError','error', res.error.message); }
+  else { showMsg('loginSuccess','success','Password reset link bhej diya! Email check karo.'); }
+}
+
+function showWelcome(name){
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('signupForm').style.display = 'none';
+  document.getElementById('tabsRow').style.display = 'none';
+  var n = name.charAt(0).toUpperCase() + name.slice(1);
+  document.getElementById('welcomeName').textContent = 'Welcome, ' + n + '! &#128640;';
+  document.getElementById('welcomeScreen').classList.add('show');
+}
+</script>
+</body>
+</html>

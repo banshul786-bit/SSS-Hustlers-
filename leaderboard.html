@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SSC Hustlers - Leaderboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#0b1437;--gold:#d4a843;--gl:#f0c96a;--w:#fff;--m:#8a95b0;--t:#e8ecf7;--green:#34c759;--red:#ff3b30;--silver:#c0c0c0;--bronze:#cd7f32;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--navy);color:var(--t);font-family:"DM Sans",sans-serif;min-height:100vh;}
+.glow1{position:fixed;width:600px;height:600px;background:radial-gradient(circle,rgba(212,168,67,.1),transparent 70%);top:-200px;right:-200px;pointer-events:none;}
+.glow2{position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(168,85,247,.07),transparent 70%);bottom:-100px;left:-100px;pointer-events:none;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 5%;background:rgba(11,20,55,.95);border-bottom:1px solid rgba(212,168,67,.12);position:relative;z-index:10;}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.logo-text{font-family:"Playfair Display",serif;font-size:1.3rem;font-weight:900;color:var(--w)}
+.logo-text span{color:var(--gold)}
+.back{color:var(--m);font-size:.85rem;text-decoration:none;transition:color .2s}
+.back:hover{color:var(--gold)}
+.wrap{max-width:900px;margin:0 auto;padding:3rem 5%;}
+
+/* HEADER */
+.page-header{text-align:center;margin-bottom:3rem;}
+.page-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.3);color:var(--gl);font-size:.75rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border-radius:100px;margin-bottom:1.2rem;}
+.page-title{font-family:"Playfair Display",serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(--w);margin-bottom:.5rem;}
+.page-sub{color:var(--m);font-size:.95rem;}
+
+/* FILTER TABS */
+.filter-row{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem;}
+.filter-btn{padding:.55rem 1.3rem;border-radius:100px;border:1px solid rgba(255,255,255,.1);background:transparent;color:var(--m);font-size:.83rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:"DM Sans",sans-serif;}
+.filter-btn:hover{border-color:rgba(212,168,67,.4);color:var(--gl);}
+.filter-btn.active{background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);border-color:transparent;}
+
+/* TOP 3 PODIUM */
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:1rem;margin-bottom:3rem;}
+.podium-item{display:flex;flex-direction:column;align-items:center;gap:.7rem;flex:1;max-width:180px;}
+.podium-card{width:100%;background:rgba(20,32,80,.8);border-radius:14px;padding:1.4rem 1rem;text-align:center;border:1px solid rgba(255,255,255,.07);position:relative;transition:transform .3s;}
+.podium-card:hover{transform:translateY(-4px);}
+.podium-card.first{border-color:rgba(212,168,67,.4);background:rgba(20,32,80,.95);box-shadow:0 8px 32px rgba(212,168,67,.2);}
+.podium-card.second{border-color:rgba(192,192,192,.3);}
+.podium-card.third{border-color:rgba(205,127,50,.3);}
+.rank-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;}
+.rank-badge.r1{background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);}
+.rank-badge.r2{background:linear-gradient(135deg,#c0c0c0,#e8e8e8);color:#333;}
+.rank-badge.r3{background:linear-gradient(135deg,#cd7f32,#e8a857);color:var(--navy);}
+.podium-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;margin:0 auto .5rem;border:2px solid rgba(255,255,255,.1);}
+.av-gold{background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);border-color:var(--gold);}
+.av-silver{background:linear-gradient(135deg,#888,#bbb);color:var(--w);border-color:#bbb;}
+.av-bronze{background:linear-gradient(135deg,#8b4513,#cd7f32);color:var(--w);border-color:#cd7f32;}
+.podium-name{font-size:.88rem;font-weight:600;color:var(--w);}
+.podium-score{font-family:"Playfair Display",serif;font-size:1.3rem;font-weight:700;color:var(--gold);}
+.podium-detail{font-size:.72rem;color:var(--m);margin-top:.1rem;}
+.podium-block{width:100%;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:center;font-family:"Playfair Display",serif;font-weight:700;font-size:1.1rem;color:rgba(255,255,255,.3);}
+.block-1{height:70px;background:linear-gradient(135deg,rgba(212,168,67,.3),rgba(212,168,67,.1));border:1px solid rgba(212,168,67,.3);color:rgba(212,168,67,.6);}
+.block-2{height:50px;background:linear-gradient(135deg,rgba(192,192,192,.2),rgba(192,192,192,.05));border:1px solid rgba(192,192,192,.2);}
+.block-3{height:36px;background:linear-gradient(135deg,rgba(205,127,50,.2),rgba(205,127,50,.05));border:1px solid rgba(205,127,50,.2);}
+
+/* TABLE */
+.lb-table{background:rgba(20,32,80,.5);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;}
+.lb-head{display:grid;grid-template-columns:60px 1fr 100px 100px 90px;gap:1rem;padding:.9rem 1.5rem;background:rgba(11,20,55,.6);border-bottom:1px solid rgba(255,255,255,.06);}
+.lb-head span{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);font-weight:600;}
+.lb-row{display:grid;grid-template-columns:60px 1fr 100px 100px 90px;gap:1rem;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;transition:background .2s;animation:slideIn .4s ease both;}
+.lb-row:last-child{border-bottom:none;}
+.lb-row:hover{background:rgba(212,168,67,.04);}
+.lb-row.me{background:rgba(212,168,67,.06);border-left:3px solid var(--gold);}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.rank-num{font-family:"Playfair Display",serif;font-size:1.1rem;font-weight:700;color:var(--m);text-align:center;}
+.rank-num.top1{color:var(--gold);}
+.rank-num.top2{color:var(--silver);}
+.rank-num.top3{color:var(--bronze);}
+.user-info{display:flex;align-items:center;gap:.8rem;}
+.user-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0;}
+.user-name{font-size:.9rem;font-weight:600;color:var(--w);}
+.user-city{font-size:.72rem;color:var(--m);}
+.score-val{font-family:"Playfair Display",serif;font-size:1rem;font-weight:700;color:var(--gl);}
+.acc-val{font-size:.88rem;color:var(--t);}
+.badge-tag{font-size:.7rem;font-weight:600;padding:.2rem .6rem;border-radius:100px;}
+.badge-fire{background:rgba(255,59,48,.12);color:#ff6b6b;border:1px solid rgba(255,59,48,.2);}
+.badge-new{background:rgba(52,199,89,.12);color:#5dea85;border:1px solid rgba(52,199,89,.2);}
+.badge-pro{background:rgba(212,168,67,.12);color:var(--gl);border:1px solid rgba(212,168,67,.25);}
+.badge-up{background:rgba(0,198,255,.12);color:#5dd8ff;border:1px solid rgba(0,198,255,.2);}
+
+/* MY RANK CARD */
+.my-rank{background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.25);border-radius:14px;padding:1.4rem 1.8rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.my-rank-left{display:flex;align-items:center;gap:1rem;}
+.my-av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#1e2f6a);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:var(--navy);}
+.my-name{font-size:1rem;font-weight:600;color:var(--w);}
+.my-sub{font-size:.78rem;color:var(--m);}
+.my-rank-right{display:flex;gap:2rem;flex-wrap:wrap;}
+.my-stat{text-align:center;}
+.my-stat-val{font-family:"Playfair Display",serif;font-size:1.5rem;font-weight:700;color:var(--gold);}
+.my-stat-label{font-size:.7rem;color:var(--m);text-transform:uppercase;letter-spacing:1px;}
+
+/* SEARCH */
+.search-row{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.search-input{flex:1;min-width:200px;background:rgba(11,20,55,.7);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:.75rem 1.1rem;color:var(--w);font-size:.9rem;font-family:"DM Sans",sans-serif;outline:none;transition:border-color .2s;}
+.search-input:focus{border-color:rgba(212,168,67,.4);}
+.search-input::placeholder{color:var(--m);}
+</style>
+</head>
+<body>
+<div class="glow1"></div>
+<div class="glow2"></div>
+
+<nav>
+  <a href="index.html" class="logo">
+    <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="48" fill="#0b1437"/>
+      <path d="M48 25 C35 22 20 28 18 40 C16 48 20 54 26 57 C22 62 24 70 30 72 C32 78 40 80 46 76 L48 76 L48 25Z" fill="#00c6ff" opacity="0.9"/>
+      <path d="M52 25 C65 22 80 28 82 40 C84 48 80 54 74 57 C78 62 76 70 70 72 C68 78 60 80 54 76 L52 76 L52 25Z" fill="#a855f7" opacity="0.9"/>
+      <path d="M55 18 L42 52 L52 52 L45 82 L62 44 L51 44 Z" fill="#ffd700" stroke="#fff" stroke-width="1"/>
+    </svg>
+    <div class="logo-text">SSC <span>Hustlers</span></div>
+  </a>
+  <a href="index.html" class="back">&larr; Home</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-header">
+    <div class="page-badge">&#127942; All-India Rankings</div>
+    <h1 class="page-title">Leaderboard</h1>
+    <p class="page-sub">Dekho kaun hai sabse aage &mdash; kya tu top mein hai?</p>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="setFilter(this,'daily')">Aaj</button>
+    <button class="filter-btn" onclick="setFilter(this,'weekly')">Is Hafte</button>
+    <button class="filter-btn" onclick="setFilter(this,'monthly')">Is Mahine</button>
+    <button class="filter-btn" onclick="setFilter(this,'all')">All Time</button>
+    <button class="filter-btn" onclick="setFilter(this,'cgl')">SSC CGL</button>
+    <button class="filter-btn" onclick="setFilter(this,'chsl')">SSC CHSL</button>
+  </div>
+
+  <!-- MY RANK -->
+  <div class="my-rank">
+    <div class="my-rank-left">
+      <div class="my-av">TU</div>
+      <div>
+        <div class="my-name">Tera Naam (Aap) &#128075;</div>
+        <div class="my-sub">Rank #47 &bull; Delhi</div>
+      </div>
+    </div>
+    <div class="my-rank-right">
+      <div class="my-stat"><div class="my-stat-val">#47</div><div class="my-stat-label">Rank</div></div>
+      <div class="my-stat"><div class="my-stat-val">2,340</div><div class="my-stat-label">Score</div></div>
+      <div class="my-stat"><div class="my-stat-val">84%</div><div class="my-stat-label">Accuracy</div></div>
+      <div class="my-stat"><div class="my-stat-val">12</div><div class="my-stat-label">Tests</div></div>
+    </div>
+  </div>
+
+  <!-- TOP 3 PODIUM -->
+  <div class="podium">
+    <!-- 2nd -->
+    <div class="podium-item">
+      <div class="podium-card second">
+        <div class="rank-badge r2">2</div>
+        <div class="podium-avatar av-silver">RK</div>
+        <div class="podium-name">Rahul Kumar</div>
+        <div class="podium-score">4,820</div>
+        <div class="podium-detail">Lucknow &bull; 97% acc</div>
+      </div>
+      <div class="podium-block block-2">2nd</div>
+    </div>
+    <!-- 1st -->
+    <div class="podium-item">
+      <div class="podium-card first">
+        <div class="rank-badge r1">&#9733;</div>
+        <div class="podium-avatar av-gold">AS</div>
+        <div class="podium-name">Anjali Singh</div>
+        <div class="podium-score">5,240</div>
+        <div class="podium-detail">Delhi &bull; 99% acc</div>
+      </div>
+      <div class="podium-block block-1">1st</div>
+    </div>
+    <!-- 3rd -->
+    <div class="podium-item">
+      <div class="podium-card third">
+        <div class="rank-badge r3">3</div>
+        <div class="podium-avatar av-bronze">PM</div>
+        <div class="podium-name">Priya Mehta</div>
+        <div class="podium-score">4,610</div>
+        <div class="podium-detail">Jaipur &bull; 95% acc</div>
+      </div>
+      <div class="podium-block block-3">3rd</div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-row">
+    <input class="search-input" type="text" placeholder="&#128269; Student ka naam search karo..." oninput="searchTable(this.value)"/>
+  </div>
+
+  <!-- TABLE -->
+  <div class="lb-table">
+    <div class="lb-head">
+      <span>Rank</span>
+      <span>Student</span>
+      <span>Score</span>
+      <span>Accuracy</span>
+      <span>Badge</span>
+    </div>
+    <div id="tableBody"></div>
+  </div>
+</div>
+
+<script>
+var data = [
+  {rank:1, name:"Anjali Singh", city:"Delhi", score:5240, acc:99, color:"#d4a843", badge:"pro", tests:28},
+  {rank:2, name:"Rahul Kumar", city:"Lucknow", score:4820, acc:97, color:"#a855f7", badge:"fire", tests:24},
+  {rank:3, name:"Priya Mehta", city:"Jaipur", score:4610, acc:95, color:"#00c6ff", badge:"pro", tests:22},
+  {rank:4, name:"Vikram Yadav", city:"Patna", score:4380, acc:92, color:"#34c759", badge:"up", tests:20},
+  {rank:5, name:"Sneha Gupta", city:"Mumbai", score:4210, acc:91, color:"#ff9500", badge:"fire", tests:19},
+  {rank:6, name:"Amit Sharma", city:"Kanpur", score:4050, acc:89, color:"#ff3b30", badge:"new", tests:17},
+  {rank:7, name:"Pooja Verma", city:"Bhopal", score:3890, acc:88, color:"#5ac8fa", badge:"up", tests:16},
+  {rank:8, name:"Suresh Patel", city:"Ahmedabad", score:3740, acc:86, color:"#af52de", badge:"pro", tests:15},
+  {rank:9, name:"Kavita Nair", city:"Chennai", score:3580, acc:85, color:"#ff6b6b", badge:"new", tests:14},
+  {rank:10, name:"Deepak Mishra", city:"Varanasi", score:3420, acc:83, color:"#ffd60a", badge:"fire", tests:13},
+  {rank:11, name:"Ritu Kumari", city:"Ranchi", score:3280, acc:82, color:"#30d158", badge:"up", tests:12},
+  {rank:12, name:"Sanjay Tiwari", city:"Agra", score:3140, acc:80, color:"#64d2ff", badge:"new", tests:11},
+  {rank:13, name:"Neha Sinha", city:"Pune", score:2980, acc:79, color:"#bf5af2", badge:"pro", tests:10},
+  {rank:14, name:"Rajesh Rao", city:"Hyderabad", score:2840, acc:77, color:"#ff9f0a", badge:"up", tests:9},
+  {rank:15, name:"Sunita Devi", city:"Kolkata", score:2710, acc:75, color:"#ff453a", badge:"new", tests:8},
+];
+
+var badgeMap = {
+  fire: ['badge-fire','&#128293; Hot'],
+  new: ['badge-new','&#127381; New'],
+  pro: ['badge-pro','&#11088; Pro'],
+  up: ['badge-up','&#128200; Rising']
+};
+
+function initials(name){return name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();}
+
+function renderTable(rows){
+  var body = document.getElementById('tableBody');
+  body.innerHTML = '';
+  rows.forEach(function(p, i){
+    var delay = i * 0.05;
+    var rankClass = p.rank===1?'top1':p.rank===2?'top2':p.rank===3?'top3':'';
+    var b = badgeMap[p.badge];
+    var row = document.createElement('div');
+    row.className = 'lb-row';
+    row.style.animationDelay = delay + 's';
+    row.innerHTML =
+      '<div class="rank-num '+rankClass+'">'+p.rank+'</div>'+
+      '<div class="user-info">'+
+        '<div class="user-av" style="background:linear-gradient(135deg,'+p.color+',#0b1437);color:#fff">'+initials(p.name)+'</div>'+
+        '<div><div class="user-name">'+p.name+'</div><div class="user-city">'+p.city+' &bull; '+p.tests+' tests</div></div>'+
+      '</div>'+
+      '<div class="score-val">'+p.score.toLocaleString()+'</div>'+
+      '<div class="acc-val">'+p.acc+'%</div>'+
+      '<div><span class="badge-tag '+b[0]+'">'+b[1]+'</span></div>';
+    body.appendChild(row);
+  });
+}
+
+function searchTable(val){
+  var filtered = data.filter(function(p){
+    return p.name.toLowerCase().includes(val.toLowerCase()) || p.city.toLowerCase().includes(val.toLowerCase());
+  });
+  renderTable(filtered);
+}
+
+function setFilter(btn, type){
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  // Shuffle scores slightly to simulate different periods
+  var modified = data.map(function(p){
+    var factor = type==='daily'?0.3:type==='weekly'?0.6:type==='monthly'?0.85:1;
+    return Object.assign({}, p, {score: Math.round(p.score * factor * (0.9+Math.random()*0.2))});
+  }).sort(function(a,b){return b.score-a.score;}).map(function(p,i){return Object.assign({},p,{rank:i+1});});
+  renderTable(modified);
+}
+
+renderTable(data);
+</script>
+</body>
+</html>

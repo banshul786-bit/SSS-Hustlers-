@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SSC Hustlers - Contact</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#0b1437;--gold:#d4a843;--gl:#f0c96a;--w:#fff;--m:#8a95b0;--t:#e8ecf7;--green:#34c759;--red:#ff3b30;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--navy);color:var(--t);font-family:"DM Sans",sans-serif;min-height:100vh;}
+.glow1{position:fixed;width:600px;height:600px;background:radial-gradient(circle,rgba(212,168,67,.09),transparent 70%);top:-200px;right:-200px;pointer-events:none;}
+.glow2{position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(0,198,255,.06),transparent 70%);bottom:-100px;left:-100px;pointer-events:none;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 5%;background:rgba(11,20,55,.95);border-bottom:1px solid rgba(212,168,67,.12);position:relative;z-index:10;}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.logo-text{font-family:"Playfair Display",serif;font-size:1.3rem;font-weight:900;color:var(--w)}
+.logo-text span{color:var(--gold)}
+.back{color:var(--m);font-size:.85rem;text-decoration:none;transition:color .2s}
+.back:hover{color:var(--gold)}
+.wrap{max-width:1000px;margin:0 auto;padding:3rem 5%;}
+
+/* HEADER */
+.page-header{text-align:center;margin-bottom:3.5rem;}
+.page-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.3);color:var(--gl);font-size:.75rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border-radius:100px;margin-bottom:1.2rem;}
+.page-title{font-family:"Playfair Display",serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(--w);margin-bottom:.5rem;}
+.page-sub{color:var(--m);font-size:.95rem;max-width:480px;margin:0 auto;}
+
+/* GRID */
+.contact-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:2rem;}
+@media(max-width:700px){.contact-grid{grid-template-columns:1fr;}}
+
+/* INFO CARDS */
+.info-col{display:flex;flex-direction:column;gap:1.2rem;}
+.info-card{background:rgba(20,32,80,.7);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1.4rem 1.6rem;display:flex;align-items:flex-start;gap:1rem;transition:border-color .3s,transform .3s;}
+.info-card:hover{border-color:rgba(212,168,67,.25);transform:translateY(-2px);}
+.info-icon{width:44px;height:44px;border-radius:11px;background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.info-label{font-size:.75rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.3rem;}
+.info-val{font-size:.92rem;color:var(--w);font-weight:500;}
+.info-sub{font-size:.78rem;color:var(--m);margin-top:.2rem;}
+
+/* SOCIAL ROW */
+.social-row{display:flex;gap:.7rem;margin-top:.5rem;}
+.soc-btn{width:40px;height:40px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(11,20,55,.6);display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;transition:all .2s;text-decoration:none;}
+.soc-btn:hover{border-color:rgba(212,168,67,.4);background:rgba(212,168,67,.08);transform:translateY(-2px);}
+
+/* FAQ */
+.faq-card{background:rgba(20,32,80,.7);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;margin-top:.5rem;}
+.faq-item{border-bottom:1px solid rgba(255,255,255,.05);}
+.faq-item:last-child{border-bottom:none;}
+.faq-q{padding:1rem 1.4rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:.88rem;font-weight:600;color:var(--t);transition:color .2s;user-select:none;}
+.faq-q:hover{color:var(--gl);}
+.faq-arrow{transition:transform .3s;color:var(--m);font-size:.8rem;}
+.faq-item.open .faq-arrow{transform:rotate(180deg);color:var(--gold);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:.84rem;color:var(--m);line-height:1.7;}
+.faq-item.open .faq-a{max-height:200px;}
+.faq-a-inner{padding:.2rem 1.4rem 1rem;}
+
+/* FORM */
+.form-card{background:rgba(20,32,80,.7);border:1px solid rgba(212,168,67,.15);border-radius:18px;padding:2.2rem;backdrop-filter:blur(20px);box-shadow:0 24px 60px rgba(0,0,0,.3);}
+.form-title{font-family:"Playfair Display",serif;font-size:1.5rem;font-weight:700;color:var(--w);margin-bottom:.3rem;}
+.form-sub{font-size:.85rem;color:var(--m);margin-bottom:1.8rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:500px){.form-row{grid-template-columns:1fr;}}
+.form-group{margin-bottom:1.1rem;}
+.form-label{font-size:.78rem;font-weight:600;color:var(--t);letter-spacing:.5px;display:block;margin-bottom:.45rem;}
+.form-input,.form-select,.form-textarea{width:100%;background:rgba(11,20,55,.7);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:.8rem 1rem;color:var(--w);font-size:.9rem;font-family:"DM Sans",sans-serif;transition:border-color .2s,box-shadow .2s;outline:none;-webkit-appearance:none;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(212,168,67,.5);box-shadow:0 0 0 3px rgba(212,168,67,.07);}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--m);font-size:.85rem;}
+.form-select option{background:#0b1437;color:var(--w);}
+.form-textarea{resize:vertical;min-height:120px;line-height:1.6;}
+.char-count{text-align:right;font-size:.72rem;color:var(--m);margin-top:.3rem;}
+.error-msg{background:rgba(255,59,48,.08);border:1px solid rgba(255,59,48,.3);border-radius:8px;padding:.65rem 1rem;font-size:.82rem;color:#ff6b6b;margin-bottom:1rem;display:none;}
+.error-msg.show{display:block;}
+.btn-submit{width:100%;padding:1rem;background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s;font-family:"DM Sans",sans-serif;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(212,168,67,.4);}
+.btn-submit:disabled{opacity:.6;transform:none;cursor:default;}
+
+/* SUCCESS */
+.success-screen{display:none;text-align:center;padding:2rem 1rem;animation:fadeUp .5s ease;}
+.success-screen.show{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.success-emoji{font-size:3.5rem;margin-bottom:1rem;}
+.success-title{font-family:"Playfair Display",serif;font-size:1.8rem;color:var(--w);margin-bottom:.5rem;}
+.success-sub{color:var(--m);margin-bottom:2rem;line-height:1.7;}
+.btn-back{display:inline-block;padding:.85rem 2.2rem;background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);border-radius:10px;font-weight:700;text-decoration:none;font-size:.92rem;transition:transform .2s;}
+.btn-back:hover{transform:translateY(-2px);}
+</style>
+</head>
+<body>
+<div class="glow1"></div>
+<div class="glow2"></div>
+
+<nav>
+  <a href="index.html" class="logo">
+    <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="48" fill="#0b1437"/>
+      <path d="M48 25 C35 22 20 28 18 40 C16 48 20 54 26 57 C22 62 24 70 30 72 C32 78 40 80 46 76 L48 76 L48 25Z" fill="#00c6ff" opacity="0.9"/>
+      <path d="M52 25 C65 22 80 28 82 40 C84 48 80 54 74 57 C78 62 76 70 70 72 C68 78 60 80 54 76 L52 76 L52 25Z" fill="#a855f7" opacity="0.9"/>
+      <path d="M55 18 L42 52 L52 52 L45 82 L62 44 L51 44 Z" fill="#ffd700" stroke="#fff" stroke-width="1"/>
+    </svg>
+    <div class="logo-text">SSC <span>Hustlers</span></div>
+  </a>
+  <a href="index.html" class="back">&larr; Home</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-header">
+    <div class="page-badge">&#128172; Humse Baat Karo</div>
+    <h1 class="page-title">Contact Us</h1>
+    <p class="page-sub">Koi bhi sawal ho &mdash; hum 24 ghante mein reply karte hain!</p>
+  </div>
+
+  <div class="contact-grid">
+    <!-- LEFT COL -->
+    <div class="info-col">
+      <div class="info-card">
+        <div class="info-icon">&#128140;</div>
+        <div>
+          <div class="info-label">Email</div>
+          <div class="info-val">help@sschustlers.in</div>
+          <div class="info-sub">24 ghante mein reply milega</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">&#128241;</div>
+        <div>
+          <div class="info-label">WhatsApp</div>
+          <div class="info-val">+91 98765 43210</div>
+          <div class="info-sub">Subah 9 baje se raat 9 baje tak</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">&#128227;</div>
+        <div>
+          <div class="info-label">Telegram Channel</div>
+          <div class="info-val">@SSCHustlers</div>
+          <div class="info-sub">Daily updates, free PDFs, tips</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">&#127758;</div>
+        <div>
+          <div class="info-label">Social Media</div>
+          <div class="info-sub" style="margin-bottom:.6rem">Humein follow karo</div>
+          <div class="social-row">
+            <a href="#" class="soc-btn" title="Telegram">&#9992;</a>
+            <a href="#" class="soc-btn" title="Instagram">&#128247;</a>
+            <a href="#" class="soc-btn" title="YouTube">&#127909;</a>
+            <a href="#" class="soc-btn" title="Twitter">&#128038;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div style="margin-top:.5rem;">
+        <div style="font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.8rem;">&#10067; Quick FAQ</div>
+        <div class="faq-card">
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">Free plan mein kya milta hai? <span class="faq-arrow">&#9660;</span></div>
+            <div class="faq-a"><div class="faq-a-inner">Free plan mein 5 mock tests per month, 300+ questions aur basic analytics milta hai. Bilkul free, koi credit card nahi chahiye!</div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">Refund policy kya hai? <span class="faq-arrow">&#9660;</span></div>
+            <div class="faq-a"><div class="faq-a-inner">Agar 7 din ke andar santusht nahi hue toh poora paisa wapas mil jaayega. Koi sawaal nahi poochha jaayega!</div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">Offline mode kaam karta hai? <span class="faq-arrow">&#9660;</span></div>
+            <div class="faq-a"><div class="faq-a-inner">Haan! Pro aur Annual plan mein saved tests offline bhi de sakte ho. Internet ki zaroorat nahi hogi!</div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">Questions latest pattern ke hain? <span class="faq-arrow">&#9660;</span></div>
+            <div class="faq-a"><div class="faq-a-inner">Bilkul! Humare experts har mahine questions update karte hain SSC ke latest pattern aur syllabus ke according.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COL - FORM -->
+    <div>
+      <div class="form-card" id="formCard">
+        <div class="form-title">Message Bhejo &#128140;</div>
+        <div class="form-sub">Hum jaldi se jaldi response denge</div>
+        <div class="error-msg" id="formError"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Naam *</label>
+            <input class="form-input" type="text" id="cName" placeholder="Aapka naam"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-input" type="tel" id="cPhone" placeholder="+91 98765 43210"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input class="form-input" type="email" id="cEmail" placeholder="apna@email.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Vishay (Topic) *</label>
+          <select class="form-select" id="cTopic">
+            <option value="">-- Topic chuniye --</option>
+            <option value="technical">Technical Problem / Bug</option>
+            <option value="billing">Payment / Billing</option>
+            <option value="content">Content / Questions</option>
+            <option value="account">Account Issue</option>
+            <option value="partnership">Partnership / Collaboration</option>
+            <option value="other">Kuch Aur</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message *</label>
+          <textarea class="form-textarea" id="cMsg" placeholder="Apna sawal ya problem yahan likho..." maxlength="500" oninput="updateChar(this)"></textarea>
+          <div class="char-count"><span id="charCount">0</span> / 500</div>
+        </div>
+        <div class="error-msg" id="formError2"></div>
+        <button class="btn-submit" id="submitBtn" onclick="submitForm()">
+          &#128140; Message Bhejo
+        </button>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-emoji">&#127881;</div>
+        <div class="success-title">Message Mil Gaya!</div>
+        <div class="success-sub">
+          Shukriya! Tumhara message humein mil gaya.<br/>
+          Hum <strong style="color:var(--gold)">24 ghante</strong> ke andar reply karenge.<br/>
+          Tab tak practice jaari rakho! &#128170;
+        </div>
+        <a href="quiz.html" class="btn-back">Quiz Pe Jao &rarr;</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateChar(el){
+  document.getElementById('charCount').textContent = el.value.length;
+}
+
+function toggleFaq(el){
+  var item = el.parentElement;
+  var isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(i){i.classList.remove('open');});
+  if(!isOpen) item.classList.add('open');
+}
+
+function submitForm(){
+  var name = document.getElementById('cName').value.trim();
+  var email = document.getElementById('cEmail').value.trim();
+  var topic = document.getElementById('cTopic').value;
+  var msg = document.getElementById('cMsg').value.trim();
+  var err = document.getElementById('formError2');
+  err.classList.remove('show');
+
+  if(!name){err.textContent='Apna naam daalo!';err.classList.add('show');return;}
+  if(!email || !email.includes('@')){err.textContent='Valid email daalo!';err.classList.add('show');return;}
+  if(!topic){err.textContent='Topic chuniye!';err.classList.add('show');return;}
+  if(msg.length < 10){err.textContent='Message thoda lamba likho (kam se kam 10 characters)!';err.classList.add('show');return;}
+
+  var btn = document.getElementById('submitBtn');
+  btn.innerHTML = '&#9203; Bheja ja raha hai...';
+  btn.disabled = true;
+
+  setTimeout(function(){
+    document.getElementById('formCard').style.display = 'none';
+    document.getElementById('successScreen').classList.add('show');
+  }, 1800);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SSC Hustlers - Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#0b1437;--gold:#d4a843;--gl:#f0c96a;--w:#fff;--m:#8a95b0;--t:#e8ecf7;--green:#34c759;--red:#ff3b30;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--navy);color:var(--t);font-family:"DM Sans",sans-serif;min-height:100vh}
+nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 5%;background:rgba(11,20,55,.95);border-bottom:1px solid rgba(212,168,67,.15)}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.logo-text{font-family:"Playfair Display",serif;font-size:1.3rem;font-weight:900;color:var(--w)}
+.logo-text span{color:var(--gold)}
+.back{color:var(--m);font-size:.85rem;text-decoration:none;display:flex;align-items:center;gap:.4rem;transition:color .2s}
+.back:hover{color:var(--gold)}
+.quiz-wrap{max-width:860px;margin:0 auto;padding:2rem 5%}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.exam-title{font-family:"Playfair Display",serif;font-size:1.4rem;color:var(--w);font-weight:700}
+.exam-sub{font-size:.8rem;color:var(--m);margin-top:.2rem}
+.timer-box{background:rgba(20,32,80,.8);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:.6rem 1.2rem;display:flex;align-items:center;gap:.6rem}
+.timer-val{font-family:"Playfair Display",serif;font-size:1.5rem;font-weight:700;color:var(--gold)}
+.timer-val.danger{color:var(--red);animation:flashRed 1s ease infinite}
+@keyframes flashRed{0%,100%{opacity:1}50%{opacity:.5}}
+.progress-row{display:flex;align-items:center;gap:1rem;margin-bottom:2rem}
+.prog-bar{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gl));border-radius:3px;transition:width .4s ease}
+.prog-text{font-size:.82rem;color:var(--m);white-space:nowrap}
+.q-card{background:rgba(20,32,80,.7);border:1px solid rgba(212,168,67,.15);border-radius:16px;padding:2rem;margin-bottom:1.5rem;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.q-num{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.8rem}
+.q-text{font-size:1.05rem;color:var(--w);line-height:1.65;margin-bottom:1.8rem}
+.options{display:flex;flex-direction:column;gap:.75rem}
+.opt{display:flex;align-items:center;gap:1rem;padding:.9rem 1.2rem;border-radius:10px;border:1.5px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s;background:rgba(11,20,55,.5);user-select:none}
+.opt:hover:not(.disabled){border-color:rgba(212,168,67,.4);background:rgba(212,168,67,.06);transform:translateX(4px)}
+.opt.correct{border-color:rgba(52,199,89,.7);background:rgba(52,199,89,.1)}
+.opt.wrong{border-color:rgba(255,59,48,.6);background:rgba(255,59,48,.08)}
+.opt.disabled{cursor:default}
+.opt-letter{width:34px;height:34px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;flex-shrink:0;color:var(--m)}
+.opt.correct .opt-letter{background:rgba(52,199,89,.2);border-color:var(--green);color:var(--green)}
+.opt.wrong .opt-letter{background:rgba(255,59,48,.2);border-color:var(--red);color:var(--red)}
+.opt-text{font-size:.92rem;color:var(--t)}
+.opt-icon{margin-left:auto;font-size:1.1rem;opacity:0}
+.opt.correct .opt-icon,.opt.wrong .opt-icon{opacity:1}
+.explanation{background:rgba(52,199,89,.06);border:1px solid rgba(52,199,89,.2);border-radius:10px;padding:1.2rem 1.4rem;margin-top:1.2rem;display:none}
+.explanation.show{display:block}
+.exp-title{font-size:.75rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:.5rem}
+.exp-text{font-size:.88rem;color:var(--t);line-height:1.65}
+.bottom-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;flex-wrap:wrap;gap:1rem}
+.q-dots{display:flex;gap:.4rem;flex-wrap:wrap;max-width:400px}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.1);cursor:pointer;transition:all .2s;border:none}
+.dot.active{background:var(--gold);transform:scale(1.3)}
+.dot.done-correct{background:var(--green)}
+.dot.done-wrong{background:var(--red)}
+.nav-btns{display:flex;gap:.8rem}
+.btn{padding:.7rem 1.6rem;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.btn-skip{background:transparent;color:var(--m);border:1px solid rgba(255,255,255,.12)}
+.btn-skip:hover{border-color:var(--m);color:var(--w)}
+.btn-next{background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy)}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(212,168,67,.3)}
+.btn-next:disabled{opacity:.4;cursor:default;transform:none}
+.result-screen{display:none;text-align:center;padding:3rem 2rem;animation:fadeIn .5s ease}
+.result-screen.show{display:block}
+.result-circle{width:140px;height:140px;border-radius:50%;margin:0 auto 2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid var(--gold);background:rgba(212,168,67,.08)}
+.result-score{font-family:"Playfair Display",serif;font-size:2.8rem;font-weight:900;color:var(--gold)}
+.result-total{font-size:.85rem;color:var(--m)}
+.result-title{font-family:"Playfair Display",serif;font-size:2rem;color:var(--w);margin-bottom:.5rem}
+.result-sub{color:var(--m);margin-bottom:2.5rem}
+.result-stats{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:2.5rem}
+.rs{background:rgba(20,32,80,.7);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1.2rem 1.8rem;min-width:110px}
+.rs-num{font-family:"Playfair Display",serif;font-size:1.8rem;font-weight:700}
+.rs-num.g{color:var(--green)}.rs-num.r{color:var(--red)}.rs-num.y{color:var(--gold)}
+.rs-label{font-size:.75rem;color:var(--m);text-transform:uppercase;letter-spacing:1px;margin-top:.2rem}
+.btn-restart{background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);padding:.9rem 2.5rem;border-radius:8px;font-weight:700;font-size:.95rem;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.btn-restart:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(212,168,67,.4)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="48" fill="#0b1437"/>
+      <path d="M48 25 C35 22 20 28 18 40 C16 48 20 54 26 57 C22 62 24 70 30 72 C32 78 40 80 46 76 L48 76 L48 25Z" fill="#00c6ff" opacity="0.9"/>
+      <path d="M52 25 C65 22 80 28 82 40 C84 48 80 54 74 57 C78 62 76 70 70 72 C68 78 60 80 54 76 L52 76 L52 25Z" fill="#a855f7" opacity="0.9"/>
+      <path d="M55 18 L42 52 L52 52 L45 82 L62 44 L51 44 Z" fill="#ffd700" stroke="#fff" stroke-width="1"/>
+    </svg>
+    <div class="logo-text">SSC <span>Hustlers</span></div>
+  </a>
+  <a href="index.html" class="back">&larr; Back to Home</a>
+</nav>
+<div class="quiz-wrap">
+  <div id="quizMain">
+    <div class="topbar">
+      <div>
+        <div class="exam-title">SSC CGL &mdash; General Knowledge</div>
+        <div class="exam-sub">Mock Test 01 &bull; 10 Questions &bull; 10 Minutes</div>
+      </div>
+      <div class="timer-box"><span>&#9200;</span><span class="timer-val" id="timerVal">10:00</span></div>
+    </div>
+    <div class="progress-row">
+      <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:10%"></div></div>
+      <span class="prog-text" id="progText">1 / 10</span>
+    </div>
+    <div class="q-card">
+      <div class="q-num" id="qNum">Question 01</div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="optionsWrap"></div>
+      <div class="explanation" id="explanation">
+        <div class="exp-title">&#128161; Explanation</div>
+        <div class="exp-text" id="expText"></div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="q-dots" id="qDots"></div>
+      <div class="nav-btns">
+        <button class="btn btn-skip" id="btnSkip">Skip &rarr;</button>
+        <button class="btn btn-next" id="btnNext" disabled>Next &rarr;</button>
+      </div>
+    </div>
+  </div>
+  <div class="result-screen" id="resultScreen">
+    <div class="result-circle">
+      <div class="result-score" id="rScore">0</div>
+      <div class="result-total" id="rTotal">/ 10</div>
+    </div>
+    <div class="result-title" id="rTitle">Well Done!</div>
+    <div class="result-sub" id="rSub"></div>
+    <div class="result-stats">
+      <div class="rs"><div class="rs-num g" id="rCorrect">0</div><div class="rs-label">Sahi</div></div>
+      <div class="rs"><div class="rs-num r" id="rWrong">0</div><div class="rs-label">Galat</div></div>
+      <div class="rs"><div class="rs-num y" id="rSkipped">0</div><div class="rs-label">Skip</div></div>
+      <div class="rs"><div class="rs-num" id="rAccuracy" style="color:var(--gold)">0%</div><div class="rs-label">Accuracy</div></div>
+    </div>
+    <button class="btn-restart" onclick="restartQuiz()">&#128257; Dobara Try Karo</button>
+  </div>
+</div>
+<script>
+const questions=[
+  {q:"Operation Flood kisse related tha?",opts:["Anaj Utpadan","Dugdh Utpadan","Machli Palan","Jal Prabandhan"],ans:1,exp:"Operation Flood 1970 mein shuru hua. Verghese Kurien ke netritva mein Dairy Development ke liye tha - ise White Revolution bhi kehte hain."},
+  {q:"Bharat ka sabse bada rajya (kshetrafal mein) kaun sa hai?",opts:["Maharashtra","Madhya Pradesh","Rajasthan","Uttar Pradesh"],ans:2,exp:"Rajasthan kshetrafal ki drishti se Bharat ka sabse bada rajya hai - lagbhag 3,42,239 sq km."},
+  {q:"Arthashastra kisne likha tha?",opts:["Chanakya","Kalidas","Vatsyayana","Ashvaghosh"],ans:0,exp:"Arthashastra Chanakya (Kautilya) ne likha tha. Yeh rajniti aur arthshastra par ek prachin granth hai."},
+  {q:"Bharat ka Rashtriya Khel kaun sa hai?",opts:["Cricket","Hockey","Kabaddi","Badminton"],ans:1,exp:"Hockey Bharat ka Rashtriya Khel hai. Bharat ne Olympics mein 8 baar gold medal jeeta hai hockey mein."},
+  {q:"Sunlight mein kitne rang hote hain?",opts:["5","6","7","8"],ans:2,exp:"Sunlight mein 7 rang hote hain - VIBGYOR: Violet, Indigo, Blue, Green, Yellow, Orange, Red."},
+  {q:"Bharat ki Samvidhan Sabha ka pratham adhiveshaan kab hua?",opts:["1946","1947","1948","1949"],ans:0,exp:"Bharat ki Samvidhan Sabha ka pratham adhiveshaan 9 December 1946 ko hua tha."},
+  {q:"Konsa vitamin Ascorbic Acid ke naam se jaana jaata hai?",opts:["Vitamin A","Vitamin B","Vitamin C","Vitamin D"],ans:2,exp:"Vitamin C ko Ascorbic Acid kehte hain. Yeh immunity ke liye bahut zaroori hai."},
+  {q:"Giddha kaunse rajya ka lok nritya hai?",opts:["Haryana","Punjab","Rajasthan","Himachal Pradesh"],ans:1,exp:"Giddha Punjab ka prasidh lok nritya hai jo mahilaon dwara kiya jaata hai."},
+  {q:"Chipko Andolan ka sambandh kisse hai?",opts:["Jal Sanrakshan","Van Sanrakshan","Bhumi Sanrakshan","Pradushan Niyantran"],ans:1,exp:"Chipko Andolan 1973 mein Uttarakhand mein shuru hua - pedon ki katai rokne ke liye. Sundarlal Bahuguna iske neta the."},
+  {q:"Bharat mein 'Silicon Valley' kise kaha jaata hai?",opts:["Mumbai","Pune","Bengaluru","Hyderabad"],ans:2,exp:"Bengaluru ko Bharat ka Silicon Valley kaha jaata hai kyunki yahan IT companies ka sabse bada hub hai."}
+];
+let current=0,seconds=600,timer=null,userAnswers=new Array(questions.length).fill(null),answered=[];
+const dots=[];
+function init(){
+  const de=document.getElementById("qDots");de.innerHTML="";dots.length=0;
+  questions.forEach((_,i)=>{
+    const d=document.createElement("button");
+    d.className="dot"+(i===0?" active":"");
+    d.onclick=()=>goTo(i);
+    de.appendChild(d);dots.push(d);
+  });
+  renderQ();startTimer();
+}
+function startTimer(){
+  clearInterval(timer);
+  timer=setInterval(()=>{
+    seconds--;
+    const m=Math.floor(seconds/60),s=seconds%60;
+    const tv=document.getElementById("timerVal");
+    tv.textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+    if(seconds<=60)tv.classList.add("danger");
+    if(seconds<=0){clearInterval(timer);showResult();}
+  },1000);
+}
+function renderQ(){
+  const q=questions[current];
+  document.getElementById("qNum").textContent="Question "+String(current+1).padStart(2,"0");
+  document.getElementById("qText").textContent=q.q;
+  document.getElementById("progFill").style.width=((current+1)/questions.length*100)+"%";
+  document.getElementById("progText").textContent=(current+1)+" / "+questions.length;
+  document.getElementById("explanation").classList.remove("show");
+  const ow=document.getElementById("optionsWrap");ow.innerHTML="";
+  const ua=userAnswers[current],isAns=ua!==null;
+  ["A","B","C","D"].forEach((l,i)=>{
+    const el=document.createElement("div");el.className="opt";
+    if(isAns){el.classList.add("disabled");if(i===q.ans)el.classList.add("correct");else if(i===ua)el.classList.add("wrong");}
+    el.innerHTML='<span class="opt-letter">'+l+'</span><span class="opt-text">'+q.opts[i]+'</span><span class="opt-icon">'+(i===q.ans&&isAns?"<b style=color:var(--green)>&#10003;</b>":i===ua&&isAns?"<b style=color:var(--red)>&#10007;</b>":"")+'</span>';
+    if(!isAns)el.onclick=()=>selectOpt(i);
+    ow.appendChild(el);
+  });
+  if(isAns){document.getElementById("expText").textContent=q.exp;document.getElementById("explanation").classList.add("show");document.getElementById("btnNext").disabled=false;}
+  else document.getElementById("btnNext").disabled=true;
+  dots.forEach((d,i)=>{
+    d.className="dot";
+    if(i===current)d.classList.add("active");
+    else if(userAnswers[i]!==null)d.classList.add(userAnswers[i]===questions[i].ans?"done-correct":"done-wrong");
+  });
+  document.getElementById("btnSkip").style.display=isAns?"none":"inline-block";
+}
+function selectOpt(i){if(userAnswers[current]!==null)return;userAnswers[current]=i;if(!answered.includes(current))answered.push(current);renderQ();}
+function goTo(i){current=i;renderQ();}
+document.getElementById("btnNext").onclick=()=>{if(!answered.includes(current))answered.push(current);current<questions.length-1?++current&&renderQ()||renderQ():showResult();};
+document.getElementById("btnSkip").onclick=()=>{current<questions.length-1?(current++,renderQ()):showResult();};
+function showResult(){
+  clearInterval(timer);
+  let correct=0,wrong=0,skipped=0;
+  questions.forEach((_,i)=>{if(userAnswers[i]===null)skipped++;else if(userAnswers[i]===questions[i].ans)correct++;else wrong++;});
+  const acc=answered.length>0?Math.round(correct/answered.length*100):0,pct=Math.round(correct/questions.length*100);
+  document.getElementById("rScore").textContent=correct;
+  document.getElementById("rCorrect").textContent=correct;
+  document.getElementById("rWrong").textContent=wrong;
+  document.getElementById("rSkipped").textContent=skipped;
+  document.getElementById("rAccuracy").textContent=acc+"%";
+  document.getElementById("rTitle").textContent=pct>=80?"Zabardast! &#128293;":pct>=60?"Achha Kiya! &#128077;":"Aur Mehnat Karo &#128170;";
+  document.getElementById("rSub").textContent="Score: "+correct+"/"+questions.length+" ("+pct+"%)";
+  document.getElementById("quizMain").style.display="none";
+  document.getElementById("resultScreen").classList.add("show");
+}
+function restartQuiz(){
+  userAnswers.fill(null);answered.length=0;current=0;seconds=600;
+  document.getElementById("timerVal").classList.remove("danger");
+  document.getElementById("resultScreen").classList.remove("show");
+  document.getElementById("quizMain").style.display="block";
+  init();
+}
+init();
+</script>
+</body>
+</html>
