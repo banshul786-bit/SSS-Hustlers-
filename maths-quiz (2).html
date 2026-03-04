@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Maths Quiz | SSC CHSL Mains 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0b1437;--card:#131d45;--card2:#1a2455;
+  --gold:#d4a843;--gl:#f0c96a;
+  --white:#fff;--text:#e8ecf7;--muted:#8a95b0;
+  --green:#34c759;--red:#ff3b30;--blue:#00c6ff;--purple:#a855f7;
+}
+body{background:var(--navy);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.bg-glow::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(212,168,67,.07),transparent 70%);top:-150px;right:-150px;}
+.bg-glow::after{content:'';position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(168,85,247,.05),transparent 70%);bottom:-100px;left:-100px;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 5%;background:rgba(11,20,55,.97);border-bottom:1px solid rgba(212,168,67,.12);position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);}
+.logo-text{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--white);}
+.logo-text span{color:var(--gold);}
+.nav-info{display:flex;align-items:center;gap:.7rem;}
+#live-score{font-size:.8rem;font-weight:700;color:var(--green);background:rgba(52,199,89,.1);border:1px solid rgba(52,199,89,.25);padding:.28rem .7rem;border-radius:8px;display:none;}
+#timer-display{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--gold);background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);padding:.32rem .85rem;border-radius:8px;min-width:78px;text-align:center;display:none;}
+#timer-display.danger{color:var(--red);background:rgba(255,59,48,.1);border-color:rgba(255,59,48,.3);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+.q-counter{font-size:.78rem;color:var(--muted);font-weight:600;}
+.screen{display:none;position:relative;z-index:1;}
+.screen.active{display:block;}
+
+/* START */
+#start-screen{max-width:660px;margin:3rem auto;padding:0 5%;}
+.start-card{background:var(--card);border:1px solid rgba(212,168,67,.2);border-radius:24px;padding:2.5rem;text-align:center;}
+.start-icon{font-size:3.5rem;margin-bottom:.7rem;}
+.start-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;margin-bottom:.4rem;}
+.start-title span{color:var(--gold);}
+.start-sub{color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;line-height:1.6;}
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:1.4rem;}
+.info-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:.9rem .5rem;}
+.info-val{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--gold);}
+.info-lbl{font-size:.67rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:.2rem;}
+.marking-box{background:rgba(212,168,67,.05);border:1px solid rgba(212,168,67,.18);border-radius:12px;padding:.9rem;margin-bottom:1.4rem;display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap;font-size:.83rem;}
+.mark-correct{color:var(--green);font-weight:700;}
+.mark-wrong{color:var(--red);font-weight:700;}
+.lang-toggle{display:flex;gap:.5rem;justify-content:center;margin-bottom:1.4rem;}
+.lang-btn{padding:.38rem 1rem;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--muted);font-family:inherit;transition:all .2s;}
+.lang-btn.active{background:rgba(212,168,67,.15);border-color:rgba(212,168,67,.5);color:var(--gold);}
+.btn-start{display:inline-flex;align-items:center;gap:.6rem;background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);border:none;border-radius:12px;padding:.9rem 2.5rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;}
+.btn-start:hover{filter:brightness(1.08);transform:translateY(-2px);}
+
+/* QUIZ */
+#quiz-screen{max-width:760px;margin:1.5rem auto;padding:0 5%;}
+.palette-wrap{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1rem;margin-bottom:1.1rem;}
+.palette-title{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.65rem;display:flex;justify-content:space-between;}
+.palette{display:flex;flex-wrap:wrap;gap:.32rem;}
+.p-btn{width:31px;height:31px;border-radius:7px;font-size:.73rem;font-weight:700;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--muted);font-family:inherit;transition:all .15s;}
+.p-btn.answered{background:rgba(52,199,89,.15);border-color:rgba(52,199,89,.4);color:var(--green);}
+.p-btn.current{background:rgba(212,168,67,.2);border-color:var(--gold);color:var(--gold);}
+.progress-wrap{margin-bottom:1.1rem;}
+.progress-top{display:flex;justify-content:space-between;margin-bottom:.4rem;font-size:.74rem;color:var(--muted);}
+.progress-bar{background:rgba(255,255,255,.06);border-radius:50px;height:5px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--gold),var(--gl));transition:width .4s ease;}
+.q-card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:1.7rem;margin-bottom:1rem;}
+.q-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;}
+.q-num{font-size:.72rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.1em;}
+.q-marks{display:flex;gap:.45rem;}
+.m-tag{font-size:.67rem;font-weight:700;padding:.18rem .52rem;border-radius:6px;}
+.m-plus{background:rgba(52,199,89,.12);color:var(--green);border:1px solid rgba(52,199,89,.25);}
+.m-minus{background:rgba(255,59,48,.1);color:#ff6b6b;border:1px solid rgba(255,59,48,.25);}
+.q-text{font-size:1rem;font-weight:500;line-height:1.75;margin-bottom:.4rem;}
+.q-text-hi{font-size:.87rem;color:var(--muted);line-height:1.7;margin-bottom:1.2rem;font-style:italic;}
+.options{display:flex;flex-direction:column;gap:.6rem;}
+.option{display:flex;align-items:center;gap:.8rem;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.09);border-radius:11px;padding:.8rem 1rem;cursor:pointer;transition:all .2s;}
+.option:hover:not(.disabled){border-color:rgba(212,168,67,.4);background:rgba(212,168,67,.06);}
+.option.selected{border-color:rgba(212,168,67,.6);background:rgba(212,168,67,.1);}
+.option.correct{border-color:rgba(52,199,89,.6);background:rgba(52,199,89,.1);}
+.option.wrong{border-color:rgba(255,59,48,.5);background:rgba(255,59,48,.08);}
+.option.disabled{cursor:default;}
+.opt-key{width:29px;height:29px;border-radius:7px;border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0;transition:all .2s;}
+.option.selected .opt-key{background:rgba(212,168,67,.2);border-color:var(--gold);color:var(--gold);}
+.option.correct .opt-key{background:rgba(52,199,89,.2);border-color:var(--green);color:var(--green);}
+.option.wrong .opt-key{background:rgba(255,59,48,.15);border-color:var(--red);color:var(--red);}
+.opt-text{font-size:.9rem;line-height:1.4;flex:1;}
+.opt-hi{font-size:.75rem;color:var(--muted);margin-top:.1rem;}
+.score-flash{font-size:.78rem;font-weight:700;padding:.22rem .65rem;border-radius:7px;display:inline-block;margin-top:.55rem;}
+.flash-correct{background:rgba(52,199,89,.15);color:var(--green);}
+.flash-wrong{background:rgba(255,59,48,.1);color:#ff6b6b;}
+.explanation{background:rgba(0,198,255,.07);border:1px solid rgba(0,198,255,.2);border-radius:11px;padding:.95rem 1.15rem;margin-top:1rem;display:none;}
+.explanation.show{display:block;animation:fadeUp .3s ease;}
+.exp-title{font-size:.7rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;}
+.exp-text{font-size:.85rem;line-height:1.7;}
+.exp-hi{font-size:.79rem;color:var(--muted);margin-top:.32rem;line-height:1.6;}
+.q-nav{display:flex;justify-content:space-between;align-items:center;gap:.8rem;margin-top:.5rem;}
+.btn-nav{padding:.62rem 1.35rem;border-radius:9px;font-weight:700;font-size:.84rem;cursor:pointer;font-family:inherit;transition:all .2s;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--text);}
+.btn-nav:hover{background:rgba(255,255,255,.1);}
+.btn-nav:disabled{opacity:.35;cursor:default;}
+.btn-submit{background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);border:none;padding:.62rem 1.5rem;border-radius:9px;font-weight:700;font-size:.86rem;cursor:pointer;font-family:inherit;transition:all .2s;}
+.btn-submit:hover{filter:brightness(1.08);}
+
+/* RESULT */
+#result-screen{max-width:760px;margin:2rem auto;padding:0 5% 4rem;}
+.result-hero{background:linear-gradient(135deg,#1a2860,#0f1e50);border:1px solid rgba(212,168,67,.2);border-radius:24px;padding:2.3rem;text-align:center;margin-bottom:1.4rem;position:relative;overflow:hidden;}
+.result-hero::before{content:'🏆';position:absolute;font-size:8rem;opacity:.04;top:50%;left:50%;transform:translate(-50%,-50%);}
+.result-grade{font-size:3.2rem;margin-bottom:.3rem;}
+.result-title{font-family:'Playfair Display',serif;font-size:1.85rem;font-weight:900;margin-bottom:.3rem;}
+.result-title span{color:var(--gold);}
+.result-msg{color:var(--muted);font-size:.88rem;margin-bottom:1.6rem;}
+.score-ring-wrap{display:flex;justify-content:center;margin:1rem 0 1.6rem;}
+.score-ring{position:relative;width:125px;height:125px;}
+.score-ring svg{transform:rotate(-90deg);}
+.score-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-family:'Playfair Display',serif;font-size:1.85rem;font-weight:700;color:var(--gold);}
+.score-sub{font-size:.67rem;color:var(--muted);}
+.result-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;}
+.rs-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:.9rem .4rem;}
+.rs-val{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;}
+.rs-lbl{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:.12rem;}
+.rs-gold{color:var(--gold);}
+.rs-green{color:var(--green);}
+.rs-red{color:var(--red);}
+.rs-blue{color:var(--blue);}
+.rs-purple{color:var(--purple);}
+.result-actions{display:flex;gap:.8rem;justify-content:center;margin-bottom:1.4rem;flex-wrap:wrap;}
+.btn-action{padding:.7rem 1.4rem;border-radius:10px;font-weight:700;font-size:.87rem;cursor:pointer;font-family:inherit;transition:all .2s;}
+.btn-action.primary{background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);border:none;}
+.btn-action.outline{background:transparent;border:1.5px solid rgba(212,168,67,.35);color:var(--gold);}
+.btn-action:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.review-section{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;}
+.review-header{padding:1.1rem 1.4rem;background:linear-gradient(135deg,#1a2860,#141e50);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06);}
+.review-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;}
+.review-item{padding:1.15rem 1.4rem;border-bottom:1px solid rgba(255,255,255,.05);}
+.review-item:last-child{border-bottom:none;}
+.ri-top{display:flex;align-items:flex-start;gap:.65rem;margin-bottom:.65rem;}
+.ri-num{font-size:.72rem;font-weight:700;color:var(--muted);flex-shrink:0;margin-top:.15rem;}
+.ri-q{font-size:.87rem;line-height:1.6;flex:1;}
+.ri-answers{display:flex;flex-direction:column;gap:.32rem;margin-bottom:.55rem;}
+.ri-ans{font-size:.79rem;padding:.35rem .72rem;border-radius:7px;}
+.ri-ans.correct{background:rgba(52,199,89,.1);color:var(--green);}
+.ri-ans.wrong{background:rgba(255,59,48,.08);color:#ff6b6b;}
+.ri-ans.skipped{background:rgba(138,149,176,.08);color:var(--muted);}
+.ri-exp{font-size:.79rem;color:var(--muted);line-height:1.6;background:rgba(0,198,255,.06);border-left:3px solid rgba(0,198,255,.3);padding:.5rem .8rem;border-radius:0 7px 7px 0;}
+.ri-mark{font-size:.7rem;font-weight:700;margin-left:auto;padding:.13rem .48rem;border-radius:5px;flex-shrink:0;}
+.ri-mark.pos{background:rgba(52,199,89,.15);color:var(--green);}
+.ri-mark.neg{background:rgba(255,59,48,.1);color:#ff6b6b;}
+.ri-mark.zero{background:rgba(138,149,176,.1);color:var(--muted);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.fade-in{animation:fadeUp .4s ease;}
+@media(max-width:600px){
+  .result-stats{grid-template-columns:repeat(3,1fr);}
+  .info-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<nav>
+  <div class="logo-text">SSC <span>Hustlers</span></div>
+  <div class="nav-info">
+    <div id="live-score">Score: 0</div>
+    <span class="q-counter" id="nav-counter"></span>
+    <div id="timer-display">30:00</div>
+  </div>
+</nav>
+
+<div id="start-screen" class="screen active">
+  <div class="start-card fade-in">
+    <div class="start-icon">📐</div>
+    <div class="start-title">Maths <span>Module-1</span></div>
+    <div class="start-sub">SSC CHSL Mains 2025 • Arithmetic, Percentage, SI/CI, Profit & Loss, Speed, Work, Ratio & More<br/>सभी प्रश्न द्विभाषी — English &amp; Hindi में</div>
+    <div class="info-grid">
+      <div class="info-box"><div class="info-val">30</div><div class="info-lbl">Questions</div></div>
+      <div class="info-box"><div class="info-val">30</div><div class="info-lbl">Minutes</div></div>
+      <div class="info-box"><div class="info-val">+3</div><div class="info-lbl">Correct</div></div>
+      <div class="info-box"><div class="info-val">−1</div><div class="info-lbl">Wrong</div></div>
+    </div>
+    <div class="marking-box">
+      <span class="mark-correct">✅ Correct = +3 marks</span>
+      <span style="color:var(--muted)">•</span>
+      <span class="mark-wrong">❌ Wrong = −1 mark</span>
+      <span style="color:var(--muted)">•</span>
+      <span style="color:var(--muted)">⏭ Skip = 0</span>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('both')" id="lang-both">EN + HI</button>
+      <button class="lang-btn" onclick="setLang('en')" id="lang-en">English Only</button>
+      <button class="lang-btn" onclick="setLang('hi')" id="lang-hi">Hindi Only</button>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">🚀 Quiz Start Karo</button>
+  </div>
+</div>
+
+<div id="quiz-screen" class="screen">
+  <div class="palette-wrap">
+    <div class="palette-title">
+      <span>Question Palette</span>
+      <span id="pal-stats" style="font-weight:600;color:var(--gold)"></span>
+    </div>
+    <div class="palette" id="palette"></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span id="prog-text">Question 1 of 30</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div id="q-container"></div>
+</div>
+
+<div id="result-screen" class="screen"></div>
+
+<script>
+const questions=[
+  {en:"A shopkeeper marks his goods 40% above cost price and gives 25% discount. Profit/loss %?",hi:"एक दुकानदार CP से 40% ऊपर MP रखता है और 25% छूट देता है। लाभ/हानि %?",opts:[{en:"5% Profit",hi:"5% लाभ"},{en:"5% Loss",hi:"5% हानि"},{en:"10% Profit",hi:"10% लाभ"},{en:"No profit/loss",hi:"न लाभ न हानि"}],ans:0,exp_en:"MP=140%CP. SP=75%×140=105%CP → Profit=5%.",exp_hi:"MP=CP का 140%। SP=105%CP → लाभ=5%।"},
+  {en:"Simple interest on ₹8,000 at 12% per annum for 3 years?",hi:"₹8,000 पर 12% प्रतिवर्ष 3 वर्षों का साधारण ब्याज?",opts:[{en:"₹2,880",hi:""},{en:"₹2,400",hi:""},{en:"₹3,200",hi:""},{en:"₹3,600",hi:""}],ans:0,exp_en:"SI=P×R×T/100=8000×12×3/100=₹2,880.",exp_hi:"SI=8000×12×3/100=₹2,880।"},
+  {en:"A sum doubles in 8 years at SI. Years to become 5 times?",hi:"SI पर कोई राशि 8 वर्षों में दोगुनी होती है। 5 गुना होने में?",opts:[{en:"32 years",hi:"32 वर्ष"},{en:"28 years",hi:"28 वर्ष"},{en:"40 years",hi:"40 वर्ष"},{en:"24 years",hi:"24 वर्ष"}],ans:0,exp_en:"Rate=100/8=12.5%. For 5 times: (5-1)×8=32 years.",exp_hi:"दर=12.5%। 5 गुना: (5-1)×8=32 वर्ष।"},
+  {en:"If 15% of x = 20% of y, then x : y = ?",hi:"यदि x का 15% = y का 20%, तो x:y?",opts:[{en:"4 : 3",hi:"4 : 3"},{en:"3 : 4",hi:"3 : 4"},{en:"5 : 4",hi:"5 : 4"},{en:"4 : 5",hi:"4 : 5"}],ans:0,exp_en:"15x=20y → x/y=4/3 → x:y=4:3.",exp_hi:"15x=20y → x:y=4:3।"},
+  {en:"240m train passes a pole in 24 sec. Time to cross 360m platform?",hi:"240 मी ट्रेन 24 से में खंभा पार करती है। 360 मी प्लेटफॉर्म में?",opts:[{en:"60 sec",hi:"60 सेकंड"},{en:"54 sec",hi:"54 सेकंड"},{en:"48 sec",hi:"48 सेकंड"},{en:"36 sec",hi:"36 सेकंड"}],ans:0,exp_en:"Speed=240/24=10 m/s. Distance=600m. Time=60s.",exp_hi:"गति=10 मी/से। दूरी=600 मी। समय=60 सेकंड।"},
+  {en:"CI on ₹10,000 at 10% p.a. for 2 years (compounded annually)?",hi:"₹10,000 पर 10% वार्षिक, 2 वर्षों का CI?",opts:[{en:"₹2,100",hi:""},{en:"₹2,000",hi:""},{en:"₹2,200",hi:""},{en:"₹1,900",hi:""}],ans:0,exp_en:"A=10000×(1.1)²=12100. CI=₹2,100.",exp_hi:"A=12100। CI=₹2,100।"},
+  {en:"Numbers in ratio 3:5. Subtract 9 from each → ratio 12:23. Numbers?",hi:"3:5 अनुपात से 9 घटाने पर 12:23। संख्याएं?",opts:[{en:"33 and 55",hi:"33 और 55"},{en:"36 and 60",hi:"36 और 60"},{en:"27 and 45",hi:"27 और 45"},{en:"21 and 35",hi:"21 और 35"}],ans:0,exp_en:"(3x-9)/(5x-9)=12/23 → x=11. Numbers: 33, 55.",exp_hi:"x=11। संख्याएं: 33, 55।"},
+  {en:"A does work in 12 days, B in 18 days. Together?",hi:"A: 12 दिन, B: 18 दिन। साथ में?",opts:[{en:"7.2 days",hi:"7.2 दिन"},{en:"6 days",hi:"6 दिन"},{en:"8 days",hi:"8 दिन"},{en:"9 days",hi:"9 दिन"}],ans:0,exp_en:"1/12+1/18=5/36. Days=36/5=7.2.",exp_hi:"5/36 प्रतिदिन। दिन=7.2।"},
+  {en:"Avg of 5 numbers = 27. Remove one → avg = 25. Removed number?",hi:"5 का औसत=27। एक हटाने पर 25। हटाई गई संख्या?",opts:[{en:"35",hi:"35"},{en:"30",hi:"30"},{en:"32",hi:"32"},{en:"37",hi:"37"}],ans:0,exp_en:"Total=135. Remaining=100. Removed=35.",exp_hi:"कुल=135। शेष=100। हटाई गई=35।"},
+  {en:"Pipe fills tank in 20hr, emptying pipe in 30hr. Both open → tank fills in?",hi:"नल: 20 घंटे में भरे, 30 घंटे में खाली। दोनों साथ?",opts:[{en:"60 hours",hi:"60 घंटे"},{en:"50 hours",hi:"50 घंटे"},{en:"45 hours",hi:"45 घंटे"},{en:"40 hours",hi:"40 घंटे"}],ans:0,exp_en:"Net=1/20-1/30=1/60 per hr. Fills in 60 hrs.",exp_hi:"1/60 प्रति घंटा। 60 घंटे।"},
+  {en:"SP = ₹1,200 at 20% profit. Cost price?",hi:"SP=₹1,200, लाभ=20%। क्रय मूल्य?",opts:[{en:"₹1,000",hi:""},{en:"₹960",hi:""},{en:"₹1,100",hi:""},{en:"₹900",hi:""}],ans:0,exp_en:"CP=1200×100/120=₹1,000.",exp_hi:"CP=₹1,000।"},
+  {en:"Boat: 15 km/h (still water), current: 3 km/h. Time for 72 km downstream?",hi:"नाव: 15 किमी/घंटा, धारा: 3 किमी/घंटा। 72 किमी अनुधारा में?",opts:[{en:"4 hours",hi:"4 घंटे"},{en:"4.5 hours",hi:"4.5 घंटे"},{en:"5 hours",hi:"5 घंटे"},{en:"3.6 hours",hi:"3.6 घंटे"}],ans:0,exp_en:"Downstream=18 km/h. Time=72/18=4 hrs.",exp_hi:"अनुधारा=18 किमी/घंटा। समय=4 घंटे।"},
+  {en:"30% of 40% of ₹1,500?",hi:"₹1,500 का 40% का 30%?",opts:[{en:"₹180",hi:""},{en:"₹200",hi:""},{en:"₹160",hi:""},{en:"₹240",hi:""}],ans:0,exp_en:"40% of 1500=600. 30% of 600=₹180.",exp_hi:"600 का 30%=₹180।"},
+  {en:"Milk:Water = 4:1. Add 10L water → 2:1. Initial milk?",hi:"दूध:पानी=4:1। 10L पानी मिलाने पर 2:1। दूध की मात्रा?",opts:[{en:"40 L",hi:"40 ली"},{en:"30 L",hi:"30 ली"},{en:"50 L",hi:"50 ली"},{en:"20 L",hi:"20 ली"}],ans:0,exp_en:"4x/(x+10)=2 → x=10. Milk=40L.",exp_hi:"x=10। दूध=40 लीटर।"},
+  {en:"200 km in 4 hrs. Speed increases 25%, new time for same distance?",hi:"200 किमी 4 घंटे में। 25% गति बढ़ने पर?",opts:[{en:"3.2 hours",hi:"3.2 घंटे"},{en:"3 hours",hi:"3 घंटे"},{en:"3.5 hours",hi:"3.5 घंटे"},{en:"2.8 hours",hi:"2.8 घंटे"}],ans:0,exp_en:"New speed=50×1.25=62.5 km/h. Time=200/62.5=3.2 hrs.",exp_hi:"नई गति=62.5। समय=3.2 घंटे।"},
+  {en:"Buy 5 articles for ₹15, sell 3 for ₹12. Profit %?",hi:"5 वस्तु ₹15 में, 3 वस्तु ₹12 में। लाभ %?",opts:[{en:"33.33%",hi:"33.33%"},{en:"25%",hi:"25%"},{en:"20%",hi:"20%"},{en:"40%",hi:"40%"}],ans:0,exp_en:"CP/item=3, SP/item=4. Profit=1/3×100=33.33%.",exp_hi:"CP=3, SP=4। लाभ%=33.33%।"},
+  {en:"LCM of 12, 18 and 24?",hi:"12, 18 और 24 का LCM?",opts:[{en:"72",hi:"72"},{en:"36",hi:"36"},{en:"48",hi:"48"},{en:"144",hi:"144"}],ans:0,exp_en:"LCM=2³×3²=72.",exp_hi:"LCM=72।"},
+  {en:"A and B earn ₹1,200/day together. A alone earns ₹800/day. B earns?",hi:"A+B=₹1200/दिन। A अकेले=₹800। B=?",opts:[{en:"₹400",hi:"₹400"},{en:"₹350",hi:"₹350"},{en:"₹450",hi:"₹450"},{en:"₹500",hi:"₹500"}],ans:0,exp_en:"B=1200-800=₹400.",exp_hi:"B=₹400।"},
+  {en:"HCF of 144 and 180?",hi:"144 और 180 का HCF?",opts:[{en:"36",hi:"36"},{en:"18",hi:"18"},{en:"72",hi:"72"},{en:"24",hi:"24"}],ans:0,exp_en:"144=2⁴×3², 180=2²×3²×5. HCF=2²×3²=36.",exp_hi:"HCF=36।"},
+  {en:"Radius of circle increased by 50%. % increase in area?",hi:"वृत्त की त्रिज्या 50% बढ़े। क्षेत्रफल में % वृद्धि?",opts:[{en:"125%",hi:"125%"},{en:"100%",hi:"100%"},{en:"150%",hi:"150%"},{en:"225%",hi:"225%"}],ans:0,exp_en:"New area=(1.5r)²π=2.25πr². Increase=125%.",exp_hi:"नया क्षेत्रफल=2.25πr²। वृद्धि=125%।"},
+  {en:"Train speed = 72 km/h. In m/s?",hi:"ट्रेन की गति=72 किमी/घंटा। m/s में?",opts:[{en:"20 m/s",hi:"20 मी/से"},{en:"18 m/s",hi:"18 मी/से"},{en:"22 m/s",hi:"22 मी/से"},{en:"25 m/s",hi:"25 मी/से"}],ans:0,exp_en:"72×5/18=20 m/s.",exp_hi:"72×5/18=20 मी/से।"},
+  {en:"Difference between CI and SI for 2 years at 10% on ₹5,000?",hi:"₹5,000 पर 10%, 2 वर्षों में CI और SI का अंतर?",opts:[{en:"₹50",hi:"₹50"},{en:"₹100",hi:"₹100"},{en:"₹25",hi:"₹25"},{en:"₹75",hi:"₹75"}],ans:0,exp_en:"Diff=P×(R/100)²=5000×0.01=₹50.",exp_hi:"अंतर=5000×0.01=₹50।"},
+  {en:"Number divided by 6 leaves remainder 3. Remainder when squared is divided by 6?",hi:"6 से भाग में शेष 3। वर्ग को 6 से भाग में शेष?",opts:[{en:"3",hi:"3"},{en:"1",hi:"1"},{en:"0",hi:"0"},{en:"5",hi:"5"}],ans:0,exp_en:"n=6k+3. n²=(6k+3)²=36k²+36k+9. Remainder=3.",exp_hi:"n²=36k²+36k+9। शेष=3।"},
+  {en:"Same SP ₹600 each: one at 20% profit, other at 20% loss. Overall %?",hi:"दोनों SP=₹600: एक पर 20% लाभ, दूसरे पर 20% हानि। कुल?",opts:[{en:"4% Loss",hi:"4% हानि"},{en:"4% Profit",hi:"4% लाभ"},{en:"No profit/loss",hi:"न लाभ न हानि"},{en:"2% Loss",hi:"2% हानि"}],ans:0,exp_en:"Loss%=(common%)²/100=(20)²/100=4% loss.",exp_hi:"हानि%=(20)²/100=4% हानि।"},
+  {en:"₹12,000 divided in ratio 2:3:5. C's share?",hi:"₹12,000 को 2:3:5 में बांटा। C का हिस्सा?",opts:[{en:"₹6,000",hi:"₹6,000"},{en:"₹4,800",hi:"₹4,800"},{en:"₹3,600",hi:"₹3,600"},{en:"₹5,400",hi:"₹5,400"}],ans:0,exp_en:"C=5/10×12000=₹6,000.",exp_hi:"C=₹6,000।"},
+  {en:"Income: 75% spent. Income rises 20%, expenditure rises 10%. Savings increase by?",hi:"आय का 75% खर्च। आय 20%, खर्च 10% बढ़े। बचत % वृद्धि?",opts:[{en:"50%",hi:"50%"},{en:"40%",hi:"40%"},{en:"60%",hi:"60%"},{en:"45%",hi:"45%"}],ans:0,exp_en:"Old savings=25. New income=120, exp=82.5, savings=37.5. Increase=50%.",exp_hi:"पुरानी बचत=25। नई=37.5। वृद्धि=50%।"},
+  {en:"Perimeter of rectangle = 60cm. Length = twice breadth. Area?",hi:"आयत का परिमाप=60 सेमी। लंबाई=2×चौड़ाई। क्षेत्रफल?",opts:[{en:"200 cm²",hi:"200 सेमी²"},{en:"180 cm²",hi:"180 सेमी²"},{en:"150 cm²",hi:"150 सेमी²"},{en:"220 cm²",hi:"220 सेमी²"}],ans:0,exp_en:"2(2x+x)=60 → x=10. Area=20×10=200cm².",exp_hi:"x=10। क्षेत्रफल=200 सेमी²।"},
+  {en:"₹5,000 invested at 8% CI. Amount after 2 years?",hi:"₹5,000 पर 8% CI। 2 वर्ष बाद राशि?",opts:[{en:"₹5,832",hi:"₹5,832"},{en:"₹5,800",hi:"₹5,800"},{en:"₹5,760",hi:"₹5,760"},{en:"₹6,000",hi:"₹6,000"}],ans:0,exp_en:"A=5000×(1.08)²=5000×1.1664=₹5,832.",exp_hi:"A=₹5,832।"},
+  {en:"Pipes A and B fill tank in 12 and 16 min. Leakage empties in 48 min. All three open, tank fills in?",hi:"A: 12 मिनट, B: 16 मिनट भरे। रिसाव 48 मिनट में खाली करे। तीनों साथ?",opts:[{en:"8 minutes",hi:"8 मिनट"},{en:"10 minutes",hi:"10 मिनट"},{en:"9.6 minutes",hi:"9.6 मिनट"},{en:"12 minutes",hi:"12 मिनट"}],ans:0,exp_en:"Net=1/12+1/16-1/48=4/48+3/48-1/48=6/48=1/8. Tank fills in 8 min.",exp_hi:"1/8 प्रति मिनट। 8 मिनट में भरेगी।"},
+  {en:"A man walks at 5 km/h and reaches 3 min late. At 6 km/h, arrives 7 min early. Distance?",hi:"5 किमी/घंटा पर 3 मिनट देरी। 6 किमी/घंटा पर 7 मिनट जल्दी। दूरी?",opts:[{en:"5 km",hi:"5 किमी"},{en:"6 km",hi:"6 किमी"},{en:"4 km",hi:"4 किमी"},{en:"3 km",hi:"3 किमी"}],ans:0,exp_en:"d/5-d/6=(3+7)/60=10/60=1/6. d/30=1/6 → d=5 km.",exp_hi:"d/5-d/6=10/60=1/6 → d=5 किमी।"}
+];
+
+let currentQ=0,answers=new Array(questions.length).fill(null),lang='both';
+let timerInterval=null,timeLeft=30*60;
+const CM=3,WM=-1;
+
+function setLang(l){lang=l;['both','en','hi'].forEach(x=>document.getElementById('lang-'+x).classList.toggle('active',x===l));}
+function calcScore(){let s=0;answers.forEach((a,i)=>{if(a===null)return;s+=(a===questions[i].ans)?CM:WM;});return s;}
+
+function startQuiz(){
+  showScreen('quiz-screen');
+  document.getElementById('timer-display').style.display='block';
+  document.getElementById('live-score').style.display='block';
+  buildPalette();renderQuestion();startTimer();
+}
+function startTimer(){
+  updateTimer();
+  timerInterval=setInterval(()=>{
+    timeLeft--;updateTimer();
+    if(timeLeft<=300)document.getElementById('timer-display').classList.add('danger');
+    if(timeLeft<=0){clearInterval(timerInterval);submitQuiz();}
+  },1000);
+}
+function updateTimer(){
+  const m=Math.floor(timeLeft/60).toString().padStart(2,'0');
+  const s=(timeLeft%60).toString().padStart(2,'0');
+  document.getElementById('timer-display').textContent=m+':'+s;
+}
+
+function renderQuestion(){
+  const q=questions[currentQ],total=questions.length;
+  const done=answers.filter(a=>a!==null).length;
+  document.getElementById('prog-text').textContent=`Question ${currentQ+1} of ${total}`;
+  document.getElementById('prog-pct').textContent=Math.round((done/total)*100)+'%';
+  document.getElementById('prog-fill').style.width=((currentQ+1)/total*100)+'%';
+  document.getElementById('nav-counter').textContent=`${currentQ+1}/${total}`;
+  document.getElementById('live-score').textContent=`Score: ${calcScore()}`;
+
+  const isAns=answers[currentQ]!==null;
+  const keys=['A','B','C','D'];
+  let qTxt='';
+  if(lang==='en'||lang==='both')qTxt+=`<div class="q-text">${q.en}</div>`;
+  if(lang==='hi'||lang==='both')qTxt+=`<div class="q-text-hi">${q.hi}</div>`;
+
+  const optH=q.opts.map((o,i)=>{
+    let c='option',ic='';
+    if(isAns){c+=' disabled';if(i===q.ans){c+=' correct';ic='<span style="font-size:.95rem">✅</span>';}else if(i===answers[currentQ]){c+=' wrong';ic='<span style="font-size:.95rem">❌</span>';}}
+    else if(answers[currentQ]===i)c+=' selected';
+    let ot='';
+    if(lang==='en'||lang==='both')ot+=`<div>${o.en}</div>`;
+    if((lang==='hi'||lang==='both')&&o.hi)ot+=`<div class="opt-hi">${o.hi}</div>`;
+    return `<div class="${c}" onclick="pick(${i})"><div class="opt-key">${keys[i]}</div><div class="opt-text">${ot}</div>${ic}</div>`;
+  }).join('');
+
+  let flash='',exp='';
+  if(isAns){
+    const ok=answers[currentQ]===q.ans;
+    flash=`<div class="score-flash ${ok?'flash-correct':'flash-wrong'}">${ok?'✅ +'+CM+' marks':'❌ '+WM+' mark'}</div>`;
+    let ec='';
+    if(lang==='en'||lang==='both')ec+=`<div class="exp-text">💡 ${q.exp_en}</div>`;
+    if(lang==='hi'||lang==='both')ec+=`<div class="exp-hi">💡 ${q.exp_hi}</div>`;
+    exp=`<div class="explanation show"><div class="exp-title">📖 Explanation / व्याख्या</div>${ec}</div>`;
+  }
+
+  document.getElementById('q-container').innerHTML=`
+    <div class="q-card fade-in">
+      <div class="q-meta">
+        <div class="q-num">Q${currentQ+1} / ${total} • SSC CHSL Mains 2025</div>
+        <div class="q-marks"><span class="m-tag m-plus">+${CM}</span><span class="m-tag m-minus">−${Math.abs(WM)}</span></div>
+      </div>
+      ${qTxt}
+      <div class="options">${optH}</div>
+      ${flash}${exp}
+    </div>
+    <div class="q-nav">
+      <button class="btn-nav" onclick="prevQ()" ${currentQ===0?'disabled':''}>← Prev</button>
+      <button class="btn-submit" onclick="submitQuiz()">Submit 🏁</button>
+      <button class="btn-nav" onclick="nextQ()" ${currentQ===total-1?'disabled':''}>Next →</button>
+    </div>`;
+  updatePalette();
+}
+
+function pick(i){if(answers[currentQ]!==null)return;answers[currentQ]=i;renderQuestion();if(currentQ<questions.length-1)setTimeout(()=>{currentQ++;renderQuestion();},1300);}
+function prevQ(){if(currentQ>0){currentQ--;renderQuestion();}}
+function nextQ(){if(currentQ<questions.length-1){currentQ++;renderQuestion();}}
+
+function buildPalette(){
+  document.getElementById('palette').innerHTML=questions.map((_,i)=>`<button class="p-btn" id="pb-${i}" onclick="goQ(${i})">${i+1}</button>`).join('');
+}
+function updatePalette(){
+  const done=answers.filter(a=>a!==null).length;
+  document.getElementById('pal-stats').textContent=`${done}/30 attempted`;
+  questions.forEach((_,i)=>{
+    const b=document.getElementById('pb-'+i);if(!b)return;
+    b.className='p-btn';
+    if(i===currentQ)b.classList.add('current');
+    else if(answers[i]!==null)b.classList.add('answered');
+  });
+}
+function goQ(i){currentQ=i;renderQuestion();}
+
+function submitQuiz(){
+  clearInterval(timerInterval);
+  document.getElementById('timer-display').style.display='none';
+  document.getElementById('live-score').style.display='none';
+  const total=questions.length;
+  let cor=0,wr=0,sk=0;
+  answers.forEach((a,i)=>{if(a===null)sk++;else if(a===questions[i].ans)cor++;else wr++;});
+  const score=cor*CM+wr*WM,maxS=total*CM,pct=Math.round((cor/total)*100);
+  const tt=30*60-timeLeft,mm=Math.floor(tt/60),ss=tt%60;
+  let ge,gr,msg;
+  if(pct>=90){gr='S';ge='🏆';msg='Outstanding! Topper material! 🔥';}
+  else if(pct>=75){gr='A';ge='⭐';msg='Excellent! Bahut badhiya!';}
+  else if(pct>=60){gr='B';ge='👍';msg='Good attempt! Thodi aur mehnat karo.';}
+  else if(pct>=40){gr='C';ge='📚';msg='Average. Concepts aur strong karo.';}
+  else{gr='D';ge='💪';msg='Keep going! Har attempt mein improve karo.';}
+
+  const r=50,circ=2*Math.PI*r,dash=(pct/100)*circ;
+
+  const rv=questions.map((q,i)=>{
+    const ua=answers[i],ok=ua===q.ans,sk2=ua===null;
+    const keys=['A','B','C','D'];
+    const mv=sk2?'zero':(ok?'pos':'neg'),mt=sk2?'0':(ok?'+'+CM:''+WM);
+    let ah='';
+    if(sk2)ah=`<div class="ri-ans skipped">⏭ Skipped • Correct: ${keys[q.ans]}. ${q.opts[q.ans].en}</div>`;
+    else if(ok)ah=`<div class="ri-ans correct">✅ Correct: ${keys[q.ans]}. ${q.opts[q.ans].en}</div>`;
+    else ah=`<div class="ri-ans wrong">❌ Your: ${keys[ua]}. ${q.opts[ua].en}</div><div class="ri-ans correct">✅ Correct: ${keys[q.ans]}. ${q.opts[q.ans].en}</div>`;
+    return `<div class="review-item">
+      <div class="ri-top"><div class="ri-num">Q${i+1}.</div>
+      <div class="ri-q">${q.en}<br/><span style="color:var(--muted);font-size:.78rem">${q.hi}</span></div>
+      <span class="ri-mark ${mv}">${mt}</span></div>
+      <div class="ri-answers">${ah}</div>
+      <div class="ri-exp">💡 ${q.exp_en}<br/><span style="color:var(--muted)">${q.exp_hi}</span></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('result-screen').innerHTML=`
+    <div class="result-hero fade-in">
+      <div class="result-grade">${ge}</div>
+      <div class="result-title">Grade <span>${gr}</span></div>
+      <div class="result-msg">${msg}</div>
+      <div class="score-ring-wrap"><div class="score-ring">
+        <svg width="125" height="125" viewBox="0 0 125 125">
+          <circle cx="62.5" cy="62.5" r="${r}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="11"/>
+          <circle cx="62.5" cy="62.5" r="${r}" fill="none" stroke="url(#gg)" stroke-width="11"
+            stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/>
+          <defs><linearGradient id="gg" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#d4a843"/><stop offset="100%" stop-color="#f0c96a"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="score-ring-center"><div class="score-pct">${pct}%</div><div class="score-sub">${cor}/${total}</div></div>
+      </div></div>
+      <div class="result-stats">
+        <div class="rs-box"><div class="rs-val rs-gold">${score}<span style="font-size:1rem">/${maxS}</span></div><div class="rs-lbl">Score</div></div>
+        <div class="rs-box"><div class="rs-val rs-green">${cor}</div><div class="rs-lbl">Correct ✅</div></div>
+        <div class="rs-box"><div class="rs-val rs-red">${wr}</div><div class="rs-lbl">Wrong ❌</div></div>
+        <div class="rs-box"><div class="rs-val rs-purple">${sk}</div><div class="rs-lbl">Skipped ⏭</div></div>
+        <div class="rs-box"><div class="rs-val rs-blue">${mm}m${ss}s</div><div class="rs-lbl">Time</div></div>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="btn-action primary" onclick="location.reload()">🔄 Retake Quiz</button>
+      <button class="btn-action outline" onclick="window.location.href='dashboard.html'">← Dashboard</button>
+    </div>
+    <div class="review-section fade-in">
+      <div class="review-header">
+        <div class="review-title">📋 Full Review / पूर्ण समीक्षा</div>
+        <div style="font-size:.76rem;color:var(--muted)">${cor} ✅ • ${wr} ❌ • ${sk} ⏭</div>
+      </div>
+      ${rv}
+    </div>`;
+  showScreen('result-screen');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+</script>
+</body>
+</html>
