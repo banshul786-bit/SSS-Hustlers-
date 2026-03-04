@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SSC Hustlers | SSC CHSL Preparation</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0b1437;--card:#131d45;
+  --gold:#d4a843;--gl:#f0c96a;
+  --white:#fff;--text:#e8ecf7;--muted:#8a95b0;
+  --green:#34c759;--blue:#00c6ff;--purple:#a855f7;
+}
+body{background:var(--navy);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.bg-glow::before{content:'';position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(212,168,67,.08),transparent 70%);top:-200px;right:-200px;}
+.bg-glow::after{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(168,85,247,.06),transparent 70%);bottom:-150px;left:-150px;}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 5%;background:rgba(11,20,55,.97);border-bottom:1px solid rgba(212,168,67,.12);position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+.logo-text{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:var(--white);}
+.logo-text span{color:var(--gold);}
+.nav-btns{display:flex;gap:.8rem;}
+.btn-login{background:transparent;border:1.5px solid rgba(212,168,67,.4);color:var(--gold);padding:.45rem 1.2rem;border-radius:9px;font-size:.87rem;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none;transition:all .2s;}
+.btn-login:hover{background:rgba(212,168,67,.1);}
+.btn-signup{background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);border:none;padding:.45rem 1.2rem;border-radius:9px;font-size:.87rem;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none;transition:all .2s;}
+.btn-signup:hover{filter:brightness(1.08);}
+
+/* HERO */
+.hero{max-width:900px;margin:0 auto;padding:5rem 5% 4rem;text-align:center;position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);color:var(--gold);font-size:.78rem;font-weight:700;padding:.35rem 1rem;border-radius:50px;margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:.1em;}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;line-height:1.15;margin-bottom:1.2rem;}
+.hero-title span{color:var(--gold);}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:580px;margin:0 auto 2.5rem;line-height:1.7;}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem;}
+.btn-hero-primary{display:inline-flex;align-items:center;gap:.6rem;background:linear-gradient(135deg,var(--gold),var(--gl));color:var(--navy);border:none;border-radius:12px;padding:1rem 2.2rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none;transition:all .2s;}
+.btn-hero-primary:hover{filter:brightness(1.08);transform:translateY(-2px);}
+.btn-hero-outline{display:inline-flex;align-items:center;gap:.6rem;background:transparent;border:1.5px solid rgba(212,168,67,.35);color:var(--gold);border-radius:12px;padding:1rem 2.2rem;font-size:1rem;font-weight:700;text-decoration:none;transition:all .2s;}
+.btn-hero-outline:hover{background:rgba(212,168,67,.08);}
+
+/* STATS */
+.stats{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-bottom:5rem;}
+.stat{text-align:center;}
+.stat-val{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--gold);}
+.stat-lbl{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem;}
+
+/* FEATURES */
+.features{max-width:900px;margin:0 auto;padding:0 5% 5rem;position:relative;z-index:1;}
+.sec-title{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;text-align:center;margin-bottom:2.5rem;}
+.sec-title span{color:var(--gold);}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem;}
+.feat-card{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:1.8rem;transition:all .3s;}
+.feat-card:hover{border-color:rgba(212,168,67,.25);transform:translateY(-4px);}
+.feat-icon{font-size:2rem;margin-bottom:1rem;}
+.feat-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:.5rem;}
+.feat-desc{font-size:.85rem;color:var(--muted);line-height:1.6;}
+
+/* CTA */
+.cta{max-width:650px;margin:0 auto;padding:0 5% 5rem;text-align:center;position:relative;z-index:1;}
+.cta-box{background:linear-gradient(135deg,#1a2860,#0f1e50);border:1px solid rgba(212,168,67,.2);border-radius:24px;padding:3rem 2rem;}
+.cta-title{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;margin-bottom:.8rem;}
+.cta-title span{color:var(--gold);}
+.cta-sub{color:var(--muted);font-size:.92rem;margin-bottom:2rem;line-height:1.6;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.fade-in{animation:fadeUp .6s ease;}
+.fade-in-2{animation:fadeUp .6s ease .15s both;}
+.fade-in-3{animation:fadeUp .6s ease .3s both;}
+
+@media(max-width:600px){
+  .stats{gap:1.5rem;}
+  .hero{padding:3rem 5% 2rem;}
+}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<nav>
+  <a href="index.html" class="logo">
+    <svg width="32" height="32" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="48" fill="#0b1437"/>
+      <path d="M48 25 C35 22 20 28 18 40 C16 48 20 54 26 57 C22 62 24 70 30 72 C32 78 40 80 46 76 L48 76 L48 25Z" fill="#00c6ff" opacity="0.9"/>
+      <path d="M52 25 C65 22 80 28 82 40 C84 48 80 54 74 57 C78 62 76 70 70 72 C68 78 60 80 54 76 L52 76 L52 25Z" fill="#a855f7" opacity="0.9"/>
+      <path d="M55 18 L42 52 L52 52 L45 82 L62 44 L51 44 Z" fill="#ffd700" stroke="#fff" stroke-width="1"/>
+    </svg>
+    <div class="logo-text">SSC <span>Hustlers</span></div>
+  </a>
+  <div class="nav-btns">
+    <a href="login.html" class="btn-login">Login</a>
+    <a href="login.html" class="btn-signup">Sign Up Free</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge fade-in">🔥 SSC CHSL Mains 2025 Preparation</div>
+  <h1 class="hero-title fade-in-2">
+    SSC Ki Taiyari<br/><span>Sahi Tarike Se</span> Karo
+  </h1>
+  <p class="hero-sub fade-in-3">
+    Daily quizzes, bilingual questions, instant results aur leaderboard — sab ek jagah. 
+    Ab SSC CHSL crack karna aur aasaan ho gaya!
+  </p>
+  <div class="hero-btns fade-in-3">
+    <a href="login.html" class="btn-hero-primary">🚀 Abhi Shuru Karo — Free!</a>
+    <a href="login.html" class="btn-hero-outline">📚 Quizzes Dekho</a>
+  </div>
+  <div class="stats fade-in-3">
+    <div class="stat"><div class="stat-val" id="s-students">—</div><div class="stat-lbl">Students</div></div>
+    <div class="stat"><div class="stat-val" id="s-quizzes">—</div><div class="stat-lbl">Quizzes</div></div>
+    <div class="stat"><div class="stat-val" id="s-attempts">—</div><div class="stat-lbl">Attempts</div></div>
+  </div>
+</section>
+
+<section class="features">
+  <h2 class="sec-title">Kyun <span>SSC Hustlers?</span></h2>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon">🌐</div>
+      <div class="feat-title">Bilingual Questions</div>
+      <div class="feat-desc">Har question English aur Hindi dono mein — samajhna aur aasaan!</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">⏱️</div>
+      <div class="feat-title">Real Exam Pattern</div>
+      <div class="feat-desc">SSC CHSL Mains 2025 pattern ke exact questions — +3/-1 marking ke saath.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">Instant Results</div>
+      <div class="feat-desc">Har answer ke baad explanation, aur quiz ke baad detailed performance report.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🏆</div>
+      <div class="feat-title">All India Leaderboard</div>
+      <div class="feat-desc">Apni rank dekho aur doosre students se compare karo.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📅</div>
+      <div class="feat-title">Daily New Quizzes</div>
+      <div class="feat-desc">Roz naya quiz add hota hai — kabhi bhi attempt karo, score save rehta hai.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">💯</div>
+      <div class="feat-title">Bilkul Free</div>
+      <div class="feat-desc">Koi subscription nahi, koi hidden charges nahi — 100% free taiyari!</div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-box">
+    <div class="cta-title">Taiyar Ho? <span>Shuru Karo!</span></div>
+    <p class="cta-sub">Free account banao aur aaj se hi SSC CHSL ki taiyari shuru karo. Thousands of students already practice kar rahe hain!</p>
+    <a href="login.html" class="btn-hero-primary">🚀 Free Account Banao →</a>
+  </div>
+</section>
+
+<script>
+const SUPABASE_URL = 'https://bszikpzoiwzvrjovuunx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzemlrcHpvaXd6dnJqb3Z1dW54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NjY5MzYsImV4cCI6MjA4ODE0MjkzNn0.jaUjPNQTLSAioq4rF-xHzPujftqnhnFXC5P2S8SKmgU';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Agar already logged in hai toh dashboard pe bhejo
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (session) window.location.href = 'dashboard.html';
+});
+
+// Load stats
+async function loadStats() {
+  try {
+    const { count: attempts } = await sb.from('quiz_results').select('*', { count: 'exact', head: true });
+    const { data: quizzes } = await sb.from('quizzes').select('id').eq('status', 'live');
+
+    // Unique students
+    const { data: users } = await sb.from('quiz_results').select('user_id');
+    const unique = new Set((users||[]).map(u => u.user_id)).size;
+
+    document.getElementById('s-students').textContent = unique > 0 ? unique + '+' : '0';
+    document.getElementById('s-quizzes').textContent = (quizzes?.length || 0) + '+';
+    document.getElementById('s-attempts').textContent = (attempts || 0) + '+';
+  } catch(e) {
+    document.getElementById('s-students').textContent = '0';
+    document.getElementById('s-quizzes').textContent = '3+';
+    document.getElementById('s-attempts').textContent = '0';
+  }
+}
+loadStats();
+</script>
+</body>
+</html>
